@@ -17,27 +17,47 @@
 
 #include <cassert>
 
-#include "fastcdr/FastBuffer.h"
-#include "fastcdr/Cdr.h"
-
 #include "TypeSupport.hpp"
+#include "fastcdr/Cdr.h"
+#include "fastcdr/FastBuffer.h"
 #include "rosidl_typesupport_introspection_cpp/field_types.hpp"
 
-namespace rmw_fastrtps_dynamic_cpp
-{
+namespace rmw_fastrtps_dynamic_cpp {
 
-template<typename ServiceMembersType, typename MessageMembersType>
-class RequestTypeSupport : public TypeSupport<MessageMembersType>
-{
+/**
+ * @brief 请求类型支持类 (Request type support class)
+ *
+ * @tparam ServiceMembersType 服务成员类型 (Service members type)
+ * @tparam MessageMembersType 消息成员类型 (Message members type)
+ */
+template <typename ServiceMembersType, typename MessageMembersType>
+class RequestTypeSupport : public TypeSupport<MessageMembersType> {
 public:
-  RequestTypeSupport(const ServiceMembersType * members, const void * ros_type_support);
+  /**
+   * @brief 构造函数 (Constructor)
+   *
+   * @param[in] members 服务成员指针 (Pointer to service members)
+   * @param[in] ros_type_support ROS 类型支持 (ROS type support)
+   */
+  RequestTypeSupport(const ServiceMembersType* members, const void* ros_type_support);
 };
 
-template<typename ServiceMembersType, typename MessageMembersType>
-class ResponseTypeSupport : public TypeSupport<MessageMembersType>
-{
+/**
+ * @brief 响应类型支持类 (Response type support class)
+ *
+ * @tparam ServiceMembersType 服务成员类型 (Service members type)
+ * @tparam MessageMembersType 消息成员类型 (Message members type)
+ */
+template <typename ServiceMembersType, typename MessageMembersType>
+class ResponseTypeSupport : public TypeSupport<MessageMembersType> {
 public:
-  ResponseTypeSupport(const ServiceMembersType * members, const void * ros_type_support);
+  /**
+   * @brief 构造函数 (Constructor)
+   *
+   * @param[in] members 服务成员指针 (Pointer to service members)
+   * @param[in] ros_type_support ROS 类型支持 (ROS type support)
+   */
+  ResponseTypeSupport(const ServiceMembersType* members, const void* ros_type_support);
 };
 
 }  // namespace rmw_fastrtps_dynamic_cpp

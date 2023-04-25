@@ -14,17 +14,29 @@
 
 #include "rmw_fastrtps_shared_cpp/rmw_common.hpp"
 
-extern "C"
-{
-rmw_ret_t
-rmw_qos_profile_check_compatible(
-  const rmw_qos_profile_t publisher_profile,
-  const rmw_qos_profile_t subscription_profile,
-  rmw_qos_compatibility_type_t * compatibility,
-  char * reason,
-  size_t reason_size)
-{
+extern "C" {
+
+/**
+ * @brief 检查发布者和订阅者的 QoS 配置是否兼容 (Check if the QoS profiles of publisher and
+ * subscriber are compatible)
+ *
+ * @param[in] publisher_profile 发布者的 QoS 配置 (QoS profile of the publisher)
+ * @param[in] subscription_profile 订阅者的 QoS 配置 (QoS profile of the subscriber)
+ * @param[out] compatibility 返回兼容性类型 (Returns the compatibility type)
+ * @param[out] reason 如果不兼容，返回原因 (If not compatible, returns the reason)
+ * @param[in] reason_size 原因字符串的最大长度 (Maximum length of the reason string)
+ * @return rmw_ret_t 返回操作结果 (Returns the operation result)
+ */
+rmw_ret_t rmw_qos_profile_check_compatible(
+    const rmw_qos_profile_t publisher_profile,
+    const rmw_qos_profile_t subscription_profile,
+    rmw_qos_compatibility_type_t* compatibility,
+    char* reason,
+    size_t reason_size) {
+  // 调用共享实现来检查 QoS 配置的兼容性
+  // (Call the shared implementation to check the compatibility of QoS profiles)
   return rmw_fastrtps_shared_cpp::__rmw_qos_profile_check_compatible(
-    publisher_profile, subscription_profile, compatibility, reason, reason_size);
+      publisher_profile, subscription_profile, compatibility, reason, reason_size);
 }
+
 }  // extern "C"

@@ -15,6 +15,13 @@
 #ifndef RMW_FASTRTPS_DYNAMIC_CPP__SERIALIZATION_FORMAT_HPP_
 #define RMW_FASTRTPS_DYNAMIC_CPP__SERIALIZATION_FORMAT_HPP_
 
-extern const char * const eprosima_fastrtps_dynamic_serialization_format;
+/**
+ * @brief eProsima Fast RTPS 动态序列化格式常量 (eProsima Fast RTPS dynamic serialization format
+ * constant)
+ *
+ * 这个常量用于表示 eProsima Fast RTPS 的动态序列化格式。
+ * (This constant is used to represent the dynamic serialization format of eProsima Fast RTPS.)
+ */
+extern const char* const eprosima_fastrtps_dynamic_serialization_format;
 
 #endif  // RMW_FASTRTPS_DYNAMIC_CPP__SERIALIZATION_FORMAT_HPP_

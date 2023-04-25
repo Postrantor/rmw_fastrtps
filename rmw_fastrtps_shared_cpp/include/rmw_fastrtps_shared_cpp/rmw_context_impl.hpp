@@ -17,18 +17,29 @@
 
 #include <mutex>
 
-// Definition of struct rmw_context_impl_s as declared in rmw/init.h
-struct rmw_context_impl_s
-{
-  /// Pointer to `rmw_dds_common::Context`.
-  void * common;
-  /// Pointer to `rmw_fastrtps_shared_cpp::CustomParticipantInfo`.
-  void * participant_info;
-  /// Mutex used to protect initialization/destruction.
+/**
+ * @brief 定义结构体 rmw_context_impl_s，该结构体在 rmw/init.h 中声明
+ * @brief Definition of struct rmw_context_impl_s as declared in rmw/init.h
+ */
+struct rmw_context_impl_s {
+  /// 指向 `rmw_dds_common::Context` 的指针
+  /// Pointer to `rmw_dds_common::Context`
+  void* common;
+
+  /// 指向 `rmw_fastrtps_shared_cpp::CustomParticipantInfo` 的指针
+  /// Pointer to `rmw_fastrtps_shared_cpp::CustomParticipantInfo`
+  void* participant_info;
+
+  /// 用于保护初始化/销毁过程的互斥锁
+  /// Mutex used to protect initialization/destruction
   std::mutex mutex;
-  /// Reference count.
+
+  /// 引用计数
+  /// Reference count
   uint64_t count;
-  /// Shutdown flag.
+
+  /// 关闭标志
+  /// Shutdown flag
   bool is_shutdown;
 };
 

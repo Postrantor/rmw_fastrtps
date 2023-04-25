@@ -14,4 +14,9 @@
 
 #include "rmw_fastrtps_dynamic_cpp/identifier.hpp"
 
-const char * const eprosima_fastrtps_identifier = "rmw_fastrtps_dynamic_cpp";
+/**
+ * @brief 定义 eprosima_fastrtps_identifier 常量，用于表示 Fast RTPS 动态类型支持的 ROS2 RMW 实现。
+ * Define the eprosima_fastrtps_identifier constant, representing the ROS2 RMW implementation with
+ * Fast RTPS dynamic type support.
+ */
+const char* const eprosima_fastrtps_identifier = "rmw_fastrtps_dynamic_cpp";

@@ -15,17 +15,26 @@
 #include "rmw/error_handling.h"
 #include "rmw/rmw.h"
 #include "rmw/types.h"
-
+#include "rmw_fastrtps_cpp/identifier.hpp"
 #include "rmw_fastrtps_shared_cpp/rmw_common.hpp"
 
-#include "rmw_fastrtps_cpp/identifier.hpp"
+extern "C" {
 
-extern "C"
-{
-rmw_ret_t
-rmw_get_gid_for_client(const rmw_client_t * client, rmw_gid_t * gid)
-{
+/**
+ * @brief 获取客户端的全局唯一标识符 (Get the global unique identifier for the client)
+ *
+ * @param[in] client 客户端指针 (Pointer to the client)
+ * @param[out] gid 存储客户端全局唯一标识符的指针 (Pointer to store the global unique identifier of
+ * the client)
+ * @return 返回 rmw_ret_t 类型的结果，表示操作是否成功 (Returns an rmw_ret_t type result indicating
+ * whether the operation was successful)
+ */
+rmw_ret_t rmw_get_gid_for_client(const rmw_client_t* client, rmw_gid_t* gid) {
+  // 调用 __rmw_get_gid_for_client 函数，并传递 eprosima_fastrtps_identifier、client 和 gid 参数
+  // Call the __rmw_get_gid_for_client function and pass the eprosima_fastrtps_identifier, client,
+  // and gid parameters
   return rmw_fastrtps_shared_cpp::__rmw_get_gid_for_client(
-    eprosima_fastrtps_identifier, client, gid);
+      eprosima_fastrtps_identifier, client, gid);
 }
+
 }  // extern "C"

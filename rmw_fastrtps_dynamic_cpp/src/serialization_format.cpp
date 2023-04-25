@@ -14,4 +14,15 @@
 
 #include "rmw_fastrtps_dynamic_cpp/serialization_format.hpp"
 
-const char * const eprosima_fastrtps_dynamic_serialization_format = "cdr";
+/**
+ * @brief eprosima_fastrtps_dynamic_serialization_format 是一个常量字符串，表示 Fast RTPS
+ * 动态类型序列化格式。
+ * @details 该字符串用于指定 ROS2 项目中 rmw_fastrtps_dynamic_cpp 的序列化格式。Fast RTPS
+ * 是一种实时发布-订阅通信中间件。
+ *
+ * eprosima_fastrtps_dynamic_serialization_format is a constant string representing the Fast RTPS
+ * dynamic type serialization format.
+ * @details This string is used to specify the serialization format in the ROS2 project's
+ * rmw_fastrtps_dynamic_cpp. Fast RTPS is a real-time publish-subscribe communication middleware.
+ */
+const char* const eprosima_fastrtps_dynamic_serialization_format = "cdr";

@@ -13,14 +13,20 @@
 // limitations under the License.
 
 #include "rmw/rmw.h"
-
 #include "rmw_fastrtps_dynamic_cpp/serialization_format.hpp"
 
-extern "C"
-{
-const char *
-rmw_get_serialization_format()
-{
+extern "C" {
+
+/**
+ * @brief 获取序列化格式 (Get the serialization format)
+ *
+ * @return 返回 eprosima_fastrtps_dynamic_serialization_format 的指针 (Return a pointer to
+ * eprosima_fastrtps_dynamic_serialization_format)
+ */
+const char* rmw_get_serialization_format() {
+  // 返回 eprosima_fastrtps_dynamic_serialization_format 的指针
+  // (Return a pointer to eprosima_fastrtps_dynamic_serialization_format)
   return eprosima_fastrtps_dynamic_serialization_format;
 }
+
 }  // extern "C"

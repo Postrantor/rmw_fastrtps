@@ -15,6 +15,10 @@
 #ifndef RMW_FASTRTPS_CPP__SERIALIZATION_FORMAT_HPP_
 #define RMW_FASTRTPS_CPP__SERIALIZATION_FORMAT_HPP_
 
-extern const char * const eprosima_fastrtps_serialization_format;
+/**
+ * @brief 该文件定义了 eProsima Fast RTPS 序列化格式的常量。
+ * This file defines the constant for eProsima Fast RTPS serialization format.
+ */
+extern const char* const eprosima_fastrtps_serialization_format;
 
 #endif  // RMW_FASTRTPS_CPP__SERIALIZATION_FORMAT_HPP_

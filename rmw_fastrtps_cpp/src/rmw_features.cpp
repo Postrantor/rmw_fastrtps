@@ -13,14 +13,23 @@
 // limitations under the License.
 
 #include "rmw/features.h"
-
 #include "rmw_fastrtps_shared_cpp/rmw_common.hpp"
 
-extern "C"
-{
-bool
-rmw_feature_supported(rmw_feature_t feature)
-{
+extern "C" {
+
+/**
+ * @brief 检查 ROS2 Fast RTPS 实现是否支持指定的特性 (Check if the specified feature is supported by
+ * ROS2 Fast RTPS implementation)
+ *
+ * @param[in] feature 要检查的特性枚举值 (The enumerated value of the feature to check)
+ * @return 如果特性被支持，返回 true；否则，返回 false (Returns true if the feature is supported;
+ * otherwise, returns false)
+ */
+bool rmw_feature_supported(rmw_feature_t feature) {
+  // 调用 rmw_fastrtps_shared_cpp 中的 __rmw_feature_supported 函数来检查特性是否被支持
+  // (Call the __rmw_feature_supported function in rmw_fastrtps_shared_cpp to check if the feature
+  // is supported)
   return rmw_fastrtps_shared_cpp::__rmw_feature_supported(feature);
 }
+
 }  // extern "C"

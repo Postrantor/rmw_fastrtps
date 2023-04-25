@@ -15,17 +15,28 @@
 #ifndef RMW_FASTRTPS_CPP__MESSAGETYPESUPPORT_HPP_
 #define RMW_FASTRTPS_CPP__MESSAGETYPESUPPORT_HPP_
 
+#include "TypeSupport.hpp"
 #include "rosidl_typesupport_fastrtps_cpp/message_type_support.h"
 
-#include "TypeSupport.hpp"
+namespace rmw_fastrtps_cpp {
 
-namespace rmw_fastrtps_cpp
-{
-
-class MessageTypeSupport : public TypeSupport
-{
+/**
+ * @class MessageTypeSupport
+ * @brief 类MessageTypeSupport是TypeSupport的子类，用于提供ROS2中消息类型的支持。
+ *        The MessageTypeSupport class is a subclass of TypeSupport, providing support for message
+ * types in ROS2.
+ */
+class MessageTypeSupport : public TypeSupport {
 public:
-  explicit MessageTypeSupport(const message_type_support_callbacks_t * members);
+  /**
+   * @brief 构造函数，初始化MessageTypeSupport对象。
+   *        Constructor, initializes the MessageTypeSupport object.
+   *
+   * @param members 指向message_type_support_callbacks_t结构体的指针，包含了消息类型的相关回调。
+   *                Pointer to the message_type_support_callbacks_t structure, containing callbacks
+   * related to the message type.
+   */
+  explicit MessageTypeSupport(const message_type_support_callbacks_t* members);
 };
 
 }  // namespace rmw_fastrtps_cpp

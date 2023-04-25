@@ -15,19 +15,29 @@
 #ifndef TYPES__EVENT_TYPES_HPP_
 #define TYPES__EVENT_TYPES_HPP_
 
+#include "fastdds/dds/core/status/StatusMask.hpp"
 #include "rmw/event.h"
 
-#include "fastdds/dds/core/status/StatusMask.hpp"
+namespace rmw_fastrtps_shared_cpp {
+namespace internal {
 
-namespace rmw_fastrtps_shared_cpp
-{
-namespace internal
-{
-
+/**
+ * @brief 判断事件类型是否受支持 (Check if the event type is supported)
+ *
+ * @param[in] event_type 事件类型 (Event type)
+ * @return bool 如果事件类型受支持，则返回 true，否则返回 false (Returns true if the event type is
+ * supported, otherwise returns false)
+ */
 bool is_event_supported(rmw_event_type_t event_type);
 
-eprosima::fastdds::dds::StatusMask rmw_event_to_dds_statusmask(
-  const rmw_event_type_t event_type);
+/**
+ * @brief 将 rmw 事件类型转换为 Fast DDS 状态掩码 (Convert rmw event type to Fast DDS status mask)
+ *
+ * @param[in] event_type rmw 事件类型 (rmw event type)
+ * @return eprosima::fastdds::dds::StatusMask 返回对应的 Fast DDS 状态掩码 (Returns the
+ * corresponding Fast DDS status mask)
+ */
+eprosima::fastdds::dds::StatusMask rmw_event_to_dds_statusmask(const rmw_event_type_t event_type);
 
 }  // namespace internal
 }  // namespace rmw_fastrtps_shared_cpp

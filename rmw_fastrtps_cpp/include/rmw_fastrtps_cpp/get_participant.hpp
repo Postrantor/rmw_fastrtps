@@ -16,23 +16,23 @@
 #define RMW_FASTRTPS_CPP__GET_PARTICIPANT_HPP_
 
 #include "fastdds/dds/domain/DomainParticipant.hpp"
-
 #include "rmw/rmw.h"
 #include "rmw_fastrtps_cpp/visibility_control.h"
 
-namespace rmw_fastrtps_cpp
-{
+namespace rmw_fastrtps_cpp {
 
-/// Return a native Fast DDS DomainParticipant handle.
+/// 返回一个原生 Fast DDS DomainParticipant 句柄。(Return a native Fast DDS DomainParticipant
+/// handle.)
 /**
- * This function returns `NULL` when either the node handle is `NULL` or when the
- * node handle is from a different rmw implementation.
+ * 当节点句柄为 `NULL` 或节点句柄来自不同的 rmw 实现时，此函数返回 `NULL`。
+ * (This function returns `NULL` when either the node handle is `NULL` or when the
+ * node handle is from a different rmw implementation.)
  *
- * \return native Fast DDS DomainParticipant handle if successful, otherwise `NULL`
+ * \return 如果成功，则返回原生 Fast DDS DomainParticipant 句柄；否则返回 `NULL`
+ * (return native Fast DDS DomainParticipant handle if successful, otherwise `NULL`)
  */
 RMW_FASTRTPS_CPP_PUBLIC
-eprosima::fastdds::dds::DomainParticipant *
-get_domain_participant(rmw_node_t * node);
+eprosima::fastdds::dds::DomainParticipant* get_domain_participant(rmw_node_t* node);
 
 }  // namespace rmw_fastrtps_cpp
 

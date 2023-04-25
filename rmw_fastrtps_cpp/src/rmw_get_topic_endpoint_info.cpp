@@ -18,29 +18,52 @@
 #include "rmw_fastrtps_cpp/identifier.hpp"
 #include "rmw_fastrtps_shared_cpp/rmw_common.hpp"
 
-extern "C"
-{
-rmw_ret_t
-rmw_get_publishers_info_by_topic(
-  const rmw_node_t * node,
-  rcutils_allocator_t * allocator,
-  const char * topic_name,
-  bool no_mangle,
-  rmw_topic_endpoint_info_array_t * publishers_info)
-{
+extern "C" {
+
+/**
+ * @brief 获取指定主题的发布者信息 (Get the publisher information for a specific topic)
+ *
+ * @param[in] node 指向 ROS2 节点的指针 (Pointer to the ROS2 node)
+ * @param[in] allocator 用于分配内存的分配器 (Allocator used for memory allocation)
+ * @param[in] topic_name 需要获取发布者信息的主题名称 (The topic name for which publisher
+ * information is required)
+ * @param[in] no_mangle 是否不修改主题名称 (Whether to not modify the topic name)
+ * @param[out] publishers_info 存储发布者信息的数组结构 (Array structure to store the publisher's
+ * information)
+ * @return rmw_ret_t 返回操作结果 (Return the operation result)
+ */
+rmw_ret_t rmw_get_publishers_info_by_topic(
+    const rmw_node_t* node,
+    rcutils_allocator_t* allocator,
+    const char* topic_name,
+    bool no_mangle,
+    rmw_topic_endpoint_info_array_t* publishers_info) {
+  // 调用共享实现并返回结果 (Call the shared implementation and return the result)
   return rmw_fastrtps_shared_cpp::__rmw_get_publishers_info_by_topic(
-    eprosima_fastrtps_identifier, node, allocator, topic_name, no_mangle, publishers_info);
+      eprosima_fastrtps_identifier, node, allocator, topic_name, no_mangle, publishers_info);
 }
 
-rmw_ret_t
-rmw_get_subscriptions_info_by_topic(
-  const rmw_node_t * node,
-  rcutils_allocator_t * allocator,
-  const char * topic_name,
-  bool no_mangle,
-  rmw_topic_endpoint_info_array_t * subscriptions_info)
-{
+/**
+ * @brief 获取指定主题的订阅者信息 (Get the subscriber information for a specific topic)
+ *
+ * @param[in] node 指向 ROS2 节点的指针 (Pointer to the ROS2 node)
+ * @param[in] allocator 用于分配内存的分配器 (Allocator used for memory allocation)
+ * @param[in] topic_name 需要获取订阅者信息的主题名称 (The topic name for which subscriber
+ * information is required)
+ * @param[in] no_mangle 是否不修改主题名称 (Whether to not modify the topic name)
+ * @param[out] subscriptions_info 存储订阅者信息的数组结构 (Array structure to store the
+ * subscriber's information)
+ * @return rmw_ret_t 返回操作结果 (Return the operation result)
+ */
+rmw_ret_t rmw_get_subscriptions_info_by_topic(
+    const rmw_node_t* node,
+    rcutils_allocator_t* allocator,
+    const char* topic_name,
+    bool no_mangle,
+    rmw_topic_endpoint_info_array_t* subscriptions_info) {
+  // 调用共享实现并返回结果 (Call the shared implementation and return the result)
   return rmw_fastrtps_shared_cpp::__rmw_get_subscriptions_info_by_topic(
-    eprosima_fastrtps_identifier, node, allocator, topic_name, no_mangle, subscriptions_info);
+      eprosima_fastrtps_identifier, node, allocator, topic_name, no_mangle, subscriptions_info);
 }
+
 }  // extern "C"

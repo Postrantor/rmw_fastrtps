@@ -14,4 +14,9 @@
 
 #include "rmw_fastrtps_cpp/identifier.hpp"
 
-const char * const eprosima_fastrtps_identifier = "rmw_fastrtps_cpp";
+/**
+ * @brief 定义 eprosima_fastrtps_identifier 常量字符串，用于标识 Fast RTPS 实现的 ROS2 RMW 层。
+ * Define the constant string eprosima_fastrtps_identifier, used to identify the Fast RTPS
+ * implementation of the ROS2 RMW layer.
+ */
+const char* const eprosima_fastrtps_identifier = "rmw_fastrtps_cpp";

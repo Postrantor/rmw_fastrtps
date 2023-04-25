@@ -18,21 +18,33 @@
 #include <cassert>
 #include <memory>
 
-#include "fastcdr/FastBuffer.h"
-#include "fastcdr/Cdr.h"
-
 #include "TypeSupport.hpp"
-#include "rosidl_typesupport_introspection_cpp/message_introspection.hpp"
+#include "fastcdr/Cdr.h"
+#include "fastcdr/FastBuffer.h"
 #include "rosidl_typesupport_introspection_cpp/field_types.hpp"
+#include "rosidl_typesupport_introspection_cpp/message_introspection.hpp"
 
-namespace rmw_fastrtps_dynamic_cpp
-{
+namespace rmw_fastrtps_dynamic_cpp {
 
-template<typename MembersType>
-class MessageTypeSupport : public TypeSupport<MembersType>
-{
+/**
+ * @brief 模板类 MessageTypeSupport，继承自 TypeSupport 类。
+ *        Template class MessageTypeSupport, inheriting from TypeSupport class.
+ *
+ * @tparam MembersType 成员类型。Member type.
+ */
+template <typename MembersType>
+class MessageTypeSupport : public TypeSupport<MembersType> {
 public:
-  MessageTypeSupport(const MembersType * members, const void * ros_type_support);
+  /**
+   * @brief MessageTypeSupport 构造函数。
+   *        Constructor for MessageTypeSupport.
+   *
+   * @param members 成员类型的指针，用于初始化 TypeSupport 基类。
+   *                Pointer to the member type, used for initializing the TypeSupport base class.
+   * @param ros_type_support ROS 类型支持的指针，用于传递给 TypeSupport 基类。
+   *                         Pointer to the ROS type support, passed to the TypeSupport base class.
+   */
+  MessageTypeSupport(const MembersType* members, const void* ros_type_support);
 };
 
 }  // namespace rmw_fastrtps_dynamic_cpp

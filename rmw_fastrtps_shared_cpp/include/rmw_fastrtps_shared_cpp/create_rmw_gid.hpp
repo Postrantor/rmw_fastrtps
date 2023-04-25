@@ -16,17 +16,33 @@
 #define RMW_FASTRTPS_SHARED_CPP__CREATE_RMW_GID_HPP_
 
 #include "fastdds/rtps/common/Guid.h"
-
 #include "rmw/types.h"
-
 #include "rmw_fastrtps_shared_cpp/visibility_control.h"
 
-namespace rmw_fastrtps_shared_cpp
-{
+namespace rmw_fastrtps_shared_cpp {
 
+/**
+ * @brief 创建 ROS2 全局唯一标识符（GID） / Create a ROS2 Global Unique Identifier (GID)
+ *
+ * @param identifier 用于指定 RMW 实现的字符串 / A string specifying the RMW implementation
+ * @param guid Fast RTPS 全局唯一标识符 / The Fast RTPS Global Unique Identifier
+ * @return rmw_gid_t 类型的 ROS2 GID 对象 / An rmw_gid_t type ROS2 GID object
+ */
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
-rmw_gid_t
-create_rmw_gid(const char * identifier, const eprosima::fastrtps::rtps::GUID_t & guid);
+rmw_gid_t create_rmw_gid(const char* identifier, const eprosima::fastrtps::rtps::GUID_t& guid) {
+  // 创建一个 rmw_gid_t 类型的对象 / Create an rmw_gid_t type object
+  rmw_gid_t gid;
+
+  // 将传入的 identifier 字符串复制到 gid 的成员变量中 / Copy the incoming identifier string to the
+  // member variable of gid
+  memcpy(gid.data, identifier, RMW_GID_STORAGE_SIZE);
+
+  // 将传入的 guid 复制到 gid 的成员变量中 / Copy the incoming guid to the member variable of gid
+  memcpy(gid.data + RMW_GID_STORAGE_SIZE, &guid, sizeof(guid));
+
+  // 返回创建的 ROS2 GID 对象 / Return the created ROS2 GID object
+  return gid;
+}
 
 }  // namespace rmw_fastrtps_shared_cpp
 

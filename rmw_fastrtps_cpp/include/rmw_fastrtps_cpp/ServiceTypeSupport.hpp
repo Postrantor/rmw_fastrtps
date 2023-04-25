@@ -17,33 +17,54 @@
 
 #include <cassert>
 
-#include "fastcdr/FastBuffer.h"
+#include "TypeSupport.hpp"
 #include "fastcdr/Cdr.h"
-
+#include "fastcdr/FastBuffer.h"
 #include "rosidl_typesupport_fastrtps_cpp/message_type_support.h"
 #include "rosidl_typesupport_fastrtps_cpp/service_type_support.h"
 
-#include "TypeSupport.hpp"
+namespace rmw_fastrtps_cpp {
 
-namespace rmw_fastrtps_cpp
-{
-
-class ServiceTypeSupport : public TypeSupport
-{
+/**
+ * @class ServiceTypeSupport
+ * @brief 服务类型支持基类 (Service Type Support base class)
+ */
+class ServiceTypeSupport : public TypeSupport {
 protected:
+  /**
+   * @brief 构造函数 (Constructor)
+   */
   ServiceTypeSupport();
 };
 
-class RequestTypeSupport : public ServiceTypeSupport
-{
+/**
+ * @class RequestTypeSupport
+ * @brief 请求类型支持类，继承自 ServiceTypeSupport (Request Type Support class, inherits from
+ * ServiceTypeSupport)
+ */
+class RequestTypeSupport : public ServiceTypeSupport {
 public:
-  explicit RequestTypeSupport(const service_type_support_callbacks_t * members);
+  /**
+   * @brief 构造函数 (Constructor)
+   * @param members 服务类型支持回调结构体指针 (Pointer to the service type support callbacks
+   * structure)
+   */
+  explicit RequestTypeSupport(const service_type_support_callbacks_t* members);
 };
 
-class ResponseTypeSupport : public ServiceTypeSupport
-{
+/**
+ * @class ResponseTypeSupport
+ * @brief 响应类型支持类，继承自 ServiceTypeSupport (Response Type Support class, inherits from
+ * ServiceTypeSupport)
+ */
+class ResponseTypeSupport : public ServiceTypeSupport {
 public:
-  explicit ResponseTypeSupport(const service_type_support_callbacks_t * members);
+  /**
+   * @brief 构造函数 (Constructor)
+   * @param members 服务类型支持回调结构体指针 (Pointer to the service type support callbacks
+   * structure)
+   */
+  explicit ResponseTypeSupport(const service_type_support_callbacks_t* members);
 };
 
 }  // namespace rmw_fastrtps_cpp

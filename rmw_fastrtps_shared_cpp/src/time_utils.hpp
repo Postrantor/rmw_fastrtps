@@ -17,10 +17,17 @@
 
 #include "fastdds/rtps/common/Time_t.h"
 
-namespace rmw_fastrtps_shared_cpp
-{
+namespace rmw_fastrtps_shared_cpp {
 
-eprosima::fastrtps::Duration_t rmw_time_to_fastrtps(const rmw_time_t & time);
+/**
+ * @brief 将 rmw_time_t 类型转换为 eprosima::fastrtps::Duration_t 类型 (Convert rmw_time_t to
+ * eprosima::fastrtps::Duration_t)
+ *
+ * @param time 一个 rmw_time_t 类型的时间变量 (A time variable of type rmw_time_t)
+ * @return eprosima::fastrtps::Duration_t 转换后的 eprosima::fastrtps::Duration_t 类型的时间变量
+ * (The converted time variable of type eprosima::fastrtps::Duration_t)
+ */
+eprosima::fastrtps::Duration_t rmw_time_to_fastrtps(const rmw_time_t& time);
 
 }  // namespace rmw_fastrtps_shared_cpp
 

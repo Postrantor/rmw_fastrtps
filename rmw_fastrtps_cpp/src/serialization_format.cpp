@@ -14,4 +14,13 @@
 
 #include "rmw_fastrtps_cpp/serialization_format.hpp"
 
-const char * const eprosima_fastrtps_serialization_format = "cdr";
+/**
+ * @brief eprosima_fastrtps_serialization_format 是一个常量字符串，用于指定 Fast RTPS 的序列化格式。
+ * @details 该字符串被设置为 "cdr"，表示使用 Common Data Representation (CDR)
+ * 格式进行序列化。这是一种跨平台的二进制数据表示方法，广泛应用于 ROS2 和 DDS 系统中。
+ *
+ * eprosima_fastrtps_serialization_format is a constant string used to specify the serialization
+ * format for Fast RTPS. The string is set to "cdr", which stands for Common Data Representation
+ * (CDR), a cross-platform binary data representation widely used in ROS2 and DDS systems.
+ */
+const char* const eprosima_fastrtps_serialization_format = "cdr";

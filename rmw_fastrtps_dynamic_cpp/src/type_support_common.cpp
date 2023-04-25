@@ -12,25 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rmw/error_handling.h"
-
-#include "rmw_fastrtps_dynamic_cpp/TypeSupport.hpp"
-
-#include "rosidl_typesupport_introspection_cpp/identifier.hpp"
-
-#include "rosidl_typesupport_introspection_c/identifier.h"
-
 #include "type_support_common.hpp"
 
-bool
-using_introspection_c_typesupport(const char * typesupport_identifier)
-{
+#include "rmw/error_handling.h"
+#include "rmw_fastrtps_dynamic_cpp/TypeSupport.hpp"
+#include "rosidl_typesupport_introspection_c/identifier.h"
+#include "rosidl_typesupport_introspection_cpp/identifier.hpp"
+
+/**
+ * @brief 判断是否使用 introspection C 类型支持 (Determine if using introspection C typesupport)
+ *
+ * @param typesupport_identifier 类型支持标识符 (Type support identifier)
+ * @return true 如果使用 introspection C 类型支持 (If using introspection C typesupport)
+ * @return false 如果不使用 introspection C 类型支持 (If not using introspection C typesupport)
+ */
+bool using_introspection_c_typesupport(const char* typesupport_identifier) {
+  // 比较类型支持标识符与 rosidl_typesupport_introspection_c__identifier 是否相等
+  // (Compare the type support identifier with rosidl_typesupport_introspection_c__identifier for
+  // equality)
   return typesupport_identifier == rosidl_typesupport_introspection_c__identifier;
 }
 
-bool
-using_introspection_cpp_typesupport(const char * typesupport_identifier)
-{
-  return typesupport_identifier ==
-         rosidl_typesupport_introspection_cpp::typesupport_identifier;
+/**
+ * @brief 判断是否使用 introspection C++ 类型支持 (Determine if using introspection C++ typesupport)
+ *
+ * @param typesupport_identifier 类型支持标识符 (Type support identifier)
+ * @return true 如果使用 introspection C++ 类型支持 (If using introspection C++ typesupport)
+ * @return false 如果不使用 introspection C++ 类型支持 (If not using introspection C++ typesupport)
+ */
+bool using_introspection_cpp_typesupport(const char* typesupport_identifier) {
+  // 比较类型支持标识符与 rosidl_typesupport_introspection_cpp::typesupport_identifier 是否相等
+  // (Compare the type support identifier with
+  // rosidl_typesupport_introspection_cpp::typesupport_identifier for equality)
+  return typesupport_identifier == rosidl_typesupport_introspection_cpp::typesupport_identifier;
 }

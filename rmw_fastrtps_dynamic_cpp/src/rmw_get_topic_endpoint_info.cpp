@@ -18,29 +18,48 @@
 #include "rmw_fastrtps_dynamic_cpp/identifier.hpp"
 #include "rmw_fastrtps_shared_cpp/rmw_common.hpp"
 
-extern "C"
-{
-rmw_ret_t
-rmw_get_publishers_info_by_topic(
-  const rmw_node_t * node,
-  rcutils_allocator_t * allocator,
-  const char * topic_name,
-  bool no_mangle,
-  rmw_topic_endpoint_info_array_t * publishers_info)
-{
+extern "C" {
+
+/**
+ * @brief 获取给定主题上的发布者信息 (Get the publishers' information on a given topic)
+ *
+ * @param[in] node 指向 ROS2 节点的指针 (Pointer to the ROS2 node)
+ * @param[in] allocator 用于分配内存的分配器 (Allocator for allocating memory)
+ * @param[in] topic_name 要查询的主题名称 (Name of the topic to query)
+ * @param[in] no_mangle 是否对主题名称进行解析 (Whether to demangle the topic name or not)
+ * @param[out] publishers_info 存储发布者信息的数组 (Array to store the publishers' information)
+ * @return rmw_ret_t 返回操作结果 (Return the result of the operation)
+ */
+rmw_ret_t rmw_get_publishers_info_by_topic(
+    const rmw_node_t* node,
+    rcutils_allocator_t* allocator,
+    const char* topic_name,
+    bool no_mangle,
+    rmw_topic_endpoint_info_array_t* publishers_info) {
+  // 调用共享实现并返回结果 (Call the shared implementation and return the result)
   return rmw_fastrtps_shared_cpp::__rmw_get_publishers_info_by_topic(
-    eprosima_fastrtps_identifier, node, allocator, topic_name, no_mangle, publishers_info);
+      eprosima_fastrtps_identifier, node, allocator, topic_name, no_mangle, publishers_info);
 }
 
-rmw_ret_t
-rmw_get_subscriptions_info_by_topic(
-  const rmw_node_t * node,
-  rcutils_allocator_t * allocator,
-  const char * topic_name,
-  bool no_mangle,
-  rmw_topic_endpoint_info_array_t * subscriptions_info)
-{
+/**
+ * @brief 获取给定主题上的订阅者信息 (Get the subscribers' information on a given topic)
+ *
+ * @param[in] node 指向 ROS2 节点的指针 (Pointer to the ROS2 node)
+ * @param[in] allocator 用于分配内存的分配器 (Allocator for allocating memory)
+ * @param[in] topic_name 要查询的主题名称 (Name of the topic to query)
+ * @param[in] no_mangle 是否对主题名称进行解析 (Whether to demangle the topic name or not)
+ * @param[out] subscriptions_info 存储订阅者信息的数组 (Array to store the subscribers' information)
+ * @return rmw_ret_t 返回操作结果 (Return the result of the operation)
+ */
+rmw_ret_t rmw_get_subscriptions_info_by_topic(
+    const rmw_node_t* node,
+    rcutils_allocator_t* allocator,
+    const char* topic_name,
+    bool no_mangle,
+    rmw_topic_endpoint_info_array_t* subscriptions_info) {
+  // 调用共享实现并返回结果 (Call the shared implementation and return the result)
   return rmw_fastrtps_shared_cpp::__rmw_get_subscriptions_info_by_topic(
-    eprosima_fastrtps_identifier, node, allocator, topic_name, no_mangle, subscriptions_info);
+      eprosima_fastrtps_identifier, node, allocator, topic_name, no_mangle, subscriptions_info);
 }
+
 }  // extern "C"

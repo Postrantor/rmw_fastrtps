@@ -18,15 +18,15 @@
 #include "rmw/init.h"
 #include "rmw/types.h"
 
-namespace rmw_fastrtps_dynamic_cpp
-{
+namespace rmw_fastrtps_dynamic_cpp {
 
+/// 增加 `rmw_context_impl_t` 引用计数，如果需要的话进行初始化。
 /// Increment `rmw_context_impl_t` reference count, initializing it if necessary.
 /**
+ * 在创建节点时应该调用此函数，并在使用 `context->impl` 之前调用。
  * Should be called when creating a node, and before using `context->impl`.
  */
-rmw_ret_t
-increment_context_impl_ref_count(rmw_context_t * context);
+rmw_ret_t increment_context_impl_ref_count(rmw_context_t* context);
 
 }  // namespace rmw_fastrtps_dynamic_cpp
 

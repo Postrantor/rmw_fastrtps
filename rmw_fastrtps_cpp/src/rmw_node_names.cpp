@@ -17,37 +17,63 @@
 #include "rcutils/allocator.h"
 #include "rcutils/strdup.h"
 #include "rcutils/types.h"
-
 #include "rmw/allocators.h"
 #include "rmw/convert_rcutils_ret_to_rmw_ret.h"
 #include "rmw/error_handling.h"
 #include "rmw/rmw.h"
 #include "rmw/sanity_checks.h"
-
+#include "rmw_fastrtps_cpp/identifier.hpp"
 #include "rmw_fastrtps_shared_cpp/rmw_common.hpp"
 
-#include "rmw_fastrtps_cpp/identifier.hpp"
+extern "C" {
 
-extern "C"
-{
-rmw_ret_t
-rmw_get_node_names(
-  const rmw_node_t * node,
-  rcutils_string_array_t * node_names,
-  rcutils_string_array_t * node_namespaces)
-{
+/**
+ * @brief 获取节点名称和命名空间
+ *        Get node names and namespaces.
+ *
+ * @param[in] node 指向当前节点的指针
+ *                Pointer to the current node.
+ * @param[out] node_names 存储节点名称的字符串数组
+ *                 String array to store node names.
+ * @param[out] node_namespaces 存储节点命名空间的字符串数组
+ *                  String array to store node namespaces.
+ * @return rmw_ret_t 返回操作结果状态
+ *                   Return operation result status.
+ */
+rmw_ret_t rmw_get_node_names(
+    const rmw_node_t* node,
+    rcutils_string_array_t* node_names,
+    rcutils_string_array_t* node_namespaces) {
+  // 调用共享实现，获取节点名称和命名空间
+  // Call shared implementation to get node names and namespaces.
   return rmw_fastrtps_shared_cpp::__rmw_get_node_names(
-    eprosima_fastrtps_identifier, node, node_names, node_namespaces);
+      eprosima_fastrtps_identifier, node, node_names, node_namespaces);
 }
 
-rmw_ret_t
-rmw_get_node_names_with_enclaves(
-  const rmw_node_t * node,
-  rcutils_string_array_t * node_names,
-  rcutils_string_array_t * node_namespaces,
-  rcutils_string_array_t * enclaves)
-{
+/**
+ * @brief 获取节点名称、命名空间和安全区域
+ *        Get node names, namespaces, and enclaves.
+ *
+ * @param[in] node 指向当前节点的指针
+ *                Pointer to the current node.
+ * @param[out] node_names 存储节点名称的字符串数组
+ *                 String array to store node names.
+ * @param[out] node_namespaces 存储节点命名空间的字符串数组
+ *                  String array to store node namespaces.
+ * @param[out] enclaves 存储安全区域的字符串数组
+ *              String array to store enclaves.
+ * @return rmw_ret_t 返回操作结果状态
+ *                   Return operation result status.
+ */
+rmw_ret_t rmw_get_node_names_with_enclaves(
+    const rmw_node_t* node,
+    rcutils_string_array_t* node_names,
+    rcutils_string_array_t* node_namespaces,
+    rcutils_string_array_t* enclaves) {
+  // 调用共享实现，获取节点名称、命名空间和安全区域
+  // Call shared implementation to get node names, namespaces, and enclaves.
   return rmw_fastrtps_shared_cpp::__rmw_get_node_names_with_enclaves(
-    eprosima_fastrtps_identifier, node, node_names, node_namespaces, enclaves);
+      eprosima_fastrtps_identifier, node, node_names, node_namespaces, enclaves);
 }
+
 }  // extern "C"

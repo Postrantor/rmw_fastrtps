@@ -19,21 +19,35 @@
 #include "rmw_fastrtps_shared_cpp/custom_participant_info.hpp"
 #include "rmw_fastrtps_shared_cpp/visibility_control.h"
 
-namespace rmw_fastrtps_shared_cpp
-{
+namespace rmw_fastrtps_shared_cpp {
 
+/**
+ * @brief 初始化用于借贷的订阅 (Initialize the subscription for loans)
+ *
+ * @param[in] subscription 指向要初始化的订阅对象的指针 (Pointer to the subscription object to be
+ * initialized)
+ */
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
-void
-__init_subscription_for_loans(
-  rmw_subscription_t * subscription);
+void __init_subscription_for_loans(rmw_subscription_t* subscription);
 
+/**
+ * @brief 销毁订阅 (Destroy the subscription)
+ *
+ * @param[in] identifier 用于标识 rmw 实现的字符串 (String used to identify the rmw implementation)
+ * @param[in] participant_info 指向自定义参与者信息结构体的指针 (Pointer to the custom participant
+ * info structure)
+ * @param[in,out] subscription 要销毁的订阅对象 (The subscription object to be destroyed)
+ * @param[in] reset_cft 是否重置内容过滤主题，默认为 false (Whether to reset the content filtered
+ * topic, default is false)
+ * @return rmw_ret_t 返回操作结果，成功返回 RMW_RET_OK，失败返回相应错误代码 (Return the operation
+ * result, success returns RMW_RET_OK, failure returns the corresponding error code)
+ */
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
-rmw_ret_t
-destroy_subscription(
-  const char * identifier,
-  CustomParticipantInfo * participant_info,
-  rmw_subscription_t * subscription,
-  bool reset_cft = false);
+rmw_ret_t destroy_subscription(
+    const char* identifier,
+    CustomParticipantInfo* participant_info,
+    rmw_subscription_t* subscription,
+    bool reset_cft = false);
 
 }  // namespace rmw_fastrtps_shared_cpp
 

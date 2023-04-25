@@ -15,24 +15,35 @@
 #include "rmw/allocators.h"
 #include "rmw/error_handling.h"
 #include "rmw/rmw.h"
-
+#include "rmw_fastrtps_cpp/identifier.hpp"
 #include "rmw_fastrtps_shared_cpp/rmw_common.hpp"
 
-#include "rmw_fastrtps_cpp/identifier.hpp"
-
-extern "C"
-{
-rmw_wait_set_t *
-rmw_create_wait_set(rmw_context_t * context, size_t max_conditions)
-{
+extern "C" {
+/**
+ * @brief 创建一个等待集 (Create a wait set)
+ *
+ * @param[in] context ROS2 上下文指针 (Pointer to the ROS2 context)
+ * @param[in] max_conditions 最大条件数量 (Maximum number of conditions)
+ * @return rmw_wait_set_t* 指向新创建的等待集的指针 (Pointer to the newly created wait set)
+ */
+rmw_wait_set_t* rmw_create_wait_set(rmw_context_t* context, size_t max_conditions) {
+  // 调用 __rmw_create_wait_set 函数，传入 eprosima_fastrtps_identifier、context 和 max_conditions
+  // 参数 Call the __rmw_create_wait_set function with eprosima_fastrtps_identifier, context, and
+  // max_conditions as arguments
   return rmw_fastrtps_shared_cpp::__rmw_create_wait_set(
-    eprosima_fastrtps_identifier, context, max_conditions);
+      eprosima_fastrtps_identifier, context, max_conditions);
 }
 
-rmw_ret_t
-rmw_destroy_wait_set(rmw_wait_set_t * wait_set)
-{
-  return rmw_fastrtps_shared_cpp::__rmw_destroy_wait_set(
-    eprosima_fastrtps_identifier, wait_set);
+/**
+ * @brief 销毁一个等待集 (Destroy a wait set)
+ *
+ * @param[in] wait_set 指向要销毁的等待集的指针 (Pointer to the wait set to be destroyed)
+ * @return rmw_ret_t 返回操作结果 (Return the operation result)
+ */
+rmw_ret_t rmw_destroy_wait_set(rmw_wait_set_t* wait_set) {
+  // 调用 __rmw_destroy_wait_set 函数，传入 eprosima_fastrtps_identifier 和 wait_set 参数
+  // Call the __rmw_destroy_wait_set function with eprosima_fastrtps_identifier and wait_set as
+  // arguments
+  return rmw_fastrtps_shared_cpp::__rmw_destroy_wait_set(eprosima_fastrtps_identifier, wait_set);
 }
 }  // extern "C"

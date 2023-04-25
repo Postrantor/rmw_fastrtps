@@ -18,64 +18,109 @@
 #include "rmw/get_node_info_and_types.h"
 #include "rmw/names_and_types.h"
 #include "rmw/rmw.h"
-
+#include "rmw_fastrtps_cpp/identifier.hpp"
 #include "rmw_fastrtps_shared_cpp/rmw_common.hpp"
 
-#include "rmw_fastrtps_cpp/identifier.hpp"
+extern "C" {
 
-extern "C"
-{
-rmw_ret_t
-rmw_get_subscriber_names_and_types_by_node(
-  const rmw_node_t * node,
-  rcutils_allocator_t * allocator,
-  const char * node_name,
-  const char * node_namespace,
-  bool no_demangle,
-  rmw_names_and_types_t * topic_names_and_types)
-{
+/**
+ * @brief 获取指定节点的订阅者名称和类型 (Get subscriber names and types by node)
+ *
+ * @param[in] node 指向节点的指针 (Pointer to the node)
+ * @param[in] allocator 分配器用于分配内存 (Allocator for allocating memory)
+ * @param[in] node_name 要查询的节点名称 (Name of the node to query)
+ * @param[in] node_namespace 要查询的节点的命名空间 (Namespace of the node to query)
+ * @param[in] no_demangle 是否取消修饰类型名称 (Whether to demangle type names or not)
+ * @param[out] topic_names_and_types 存储获取到的订阅者名称和类型的结构体指针 (Pointer to the
+ * structure that stores the obtained subscriber names and types)
+ * @return RMW 返回代码 (RMW return code)
+ */
+rmw_ret_t rmw_get_subscriber_names_and_types_by_node(
+    const rmw_node_t* node,
+    rcutils_allocator_t* allocator,
+    const char* node_name,
+    const char* node_namespace,
+    bool no_demangle,
+    rmw_names_and_types_t* topic_names_and_types) {
+  // 调用共享函数并传递 eprosima_fastrtps_identifier 作为唯一标识符，以及其他参数 (Call the shared
+  // function with eprosima_fastrtps_identifier as the unique identifier, and other parameters)
   return rmw_fastrtps_shared_cpp::__rmw_get_subscriber_names_and_types_by_node(
-    eprosima_fastrtps_identifier, node, allocator, node_name, node_namespace, no_demangle,
-    topic_names_and_types);
+      eprosima_fastrtps_identifier, node, allocator, node_name, node_namespace, no_demangle,
+      topic_names_and_types);
 }
 
-rmw_ret_t
-rmw_get_publisher_names_and_types_by_node(
-  const rmw_node_t * node,
-  rcutils_allocator_t * allocator,
-  const char * node_name,
-  const char * node_namespace,
-  bool no_demangle,
-  rmw_names_and_types_t * topic_names_and_types)
-{
+/**
+ * @brief 获取指定节点的发布者名称和类型 (Get publisher names and types by node)
+ *
+ * @param[in] node 指向节点的指针 (Pointer to the node)
+ * @param[in] allocator 分配器用于分配内存 (Allocator for allocating memory)
+ * @param[in] node_name 要查询的节点名称 (Name of the node to query)
+ * @param[in] node_namespace 要查询的节点的命名空间 (Namespace of the node to query)
+ * @param[in] no_demangle 是否取消修饰类型名称 (Whether to demangle type names or not)
+ * @param[out] topic_names_and_types 存储获取到的发布者名称和类型的结构体指针 (Pointer to the
+ * structure that stores the obtained publisher names and types)
+ * @return RMW 返回代码 (RMW return code)
+ */
+rmw_ret_t rmw_get_publisher_names_and_types_by_node(
+    const rmw_node_t* node,
+    rcutils_allocator_t* allocator,
+    const char* node_name,
+    const char* node_namespace,
+    bool no_demangle,
+    rmw_names_and_types_t* topic_names_and_types) {
+  // 调用共享函数并传递 eprosima_fastrtps_identifier 作为唯一标识符，以及其他参数 (Call the shared
+  // function with eprosima_fastrtps_identifier as the unique identifier, and other parameters)
   return rmw_fastrtps_shared_cpp::__rmw_get_publisher_names_and_types_by_node(
-    eprosima_fastrtps_identifier, node, allocator, node_name, node_namespace, no_demangle,
-    topic_names_and_types);
+      eprosima_fastrtps_identifier, node, allocator, node_name, node_namespace, no_demangle,
+      topic_names_and_types);
 }
 
-rmw_ret_t
-rmw_get_service_names_and_types_by_node(
-  const rmw_node_t * node,
-  rcutils_allocator_t * allocator,
-  const char * node_name,
-  const char * node_namespace,
-  rmw_names_and_types_t * service_names_and_types)
-{
+/**
+ * @brief 获取指定节点的服务名称和类型 (Get service names and types by node)
+ *
+ * @param[in] node 指向节点的指针 (Pointer to the node)
+ * @param[in] allocator 分配器用于分配内存 (Allocator for allocating memory)
+ * @param[in] node_name 要查询的节点名称 (Name of the node to query)
+ * @param[in] node_namespace 要查询的节点的命名空间 (Namespace of the node to query)
+ * @param[out] service_names_and_types 存储获取到的服务名称和类型的结构体指针 (Pointer to the
+ * structure that stores the obtained service names and types)
+ * @return RMW 返回代码 (RMW return code)
+ */
+rmw_ret_t rmw_get_service_names_and_types_by_node(
+    const rmw_node_t* node,
+    rcutils_allocator_t* allocator,
+    const char* node_name,
+    const char* node_namespace,
+    rmw_names_and_types_t* service_names_and_types) {
+  // 调用共享函数并传递 eprosima_fastrtps_identifier 作为唯一标识符，以及其他参数 (Call the shared
+  // function with eprosima_fastrtps_identifier as the unique identifier, and other parameters)
   return rmw_fastrtps_shared_cpp::__rmw_get_service_names_and_types_by_node(
-    eprosima_fastrtps_identifier, node, allocator, node_name, node_namespace,
-    service_names_and_types);
+      eprosima_fastrtps_identifier, node, allocator, node_name, node_namespace,
+      service_names_and_types);
 }
 
-rmw_ret_t
-rmw_get_client_names_and_types_by_node(
-  const rmw_node_t * node,
-  rcutils_allocator_t * allocator,
-  const char * node_name,
-  const char * node_namespace,
-  rmw_names_and_types_t * service_names_and_types)
-{
+/**
+ * @brief 获取指定节点的客户端名称和类型 (Get client names and types by node)
+ *
+ * @param[in] node 指向节点的指针 (Pointer to the node)
+ * @param[in] allocator 分配器用于分配内存 (Allocator for allocating memory)
+ * @param[in] node_name 要查询的节点名称 (Name of the node to query)
+ * @param[in] node_namespace 要查询的节点的命名空间 (Namespace of the node to query)
+ * @param[out] service_names_and_types 存储获取到的客户端名称和类型的结构体指针 (Pointer to the
+ * structure that stores the obtained client names and types)
+ * @return RMW 返回代码 (RMW return code)
+ */
+rmw_ret_t rmw_get_client_names_and_types_by_node(
+    const rmw_node_t* node,
+    rcutils_allocator_t* allocator,
+    const char* node_name,
+    const char* node_namespace,
+    rmw_names_and_types_t* service_names_and_types) {
+  // 调用共享函数并传递 eprosima_fastrtps_identifier 作为唯一标识符，以及其他参数 (Call the shared
+  // function with eprosima_fastrtps_identifier as the unique identifier, and other parameters)
   return rmw_fastrtps_shared_cpp::__rmw_get_client_names_and_types_by_node(
-    eprosima_fastrtps_identifier, node, allocator, node_name, node_namespace,
-    service_names_and_types);
+      eprosima_fastrtps_identifier, node, allocator, node_name, node_namespace,
+      service_names_and_types);
 }
+
 }  // extern "C"

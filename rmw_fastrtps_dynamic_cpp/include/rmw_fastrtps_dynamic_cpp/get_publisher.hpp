@@ -16,23 +16,22 @@
 #define RMW_FASTRTPS_DYNAMIC_CPP__GET_PUBLISHER_HPP_
 
 #include "fastdds/dds/publisher/DataWriter.hpp"
-
 #include "rmw/rmw.h"
 #include "rmw_fastrtps_dynamic_cpp/visibility_control.h"
 
-namespace rmw_fastrtps_dynamic_cpp
-{
+namespace rmw_fastrtps_dynamic_cpp {
 
-/// Return a native Fast DDS DataWriter handle.
+/// 返回一个原生 Fast DDS DataWriter 句柄。 (Return a native Fast DDS DataWriter handle.)
 /**
- * The function returns `NULL` when either the publisher handle is `NULL` or
- * when the publisher handle is from a different rmw implementation.
+ * 当发布者句柄为 `NULL` 或者发布者句柄来自不同的 rmw 实现时，该函数返回 `NULL`。
+ * (The function returns `NULL` when either the publisher handle is `NULL` or
+ * when the publisher handle is from a different rmw implementation.)
  *
- * \return native Fast DDS DataWriter handle if successful, otherwise `NULL`
+ * \return 如果成功，则返回原生 Fast DDS DataWriter 句柄，否则返回 `NULL`
+ *         (native Fast DDS DataWriter handle if successful, otherwise `NULL`)
  */
 RMW_FASTRTPS_DYNAMIC_CPP_PUBLIC
-eprosima::fastdds::dds::DataWriter *
-get_datawriter(rmw_publisher_t * publisher);
+eprosima::fastdds::dds::DataWriter* get_datawriter(rmw_publisher_t* publisher);
 
 }  // namespace rmw_fastrtps_dynamic_cpp
 

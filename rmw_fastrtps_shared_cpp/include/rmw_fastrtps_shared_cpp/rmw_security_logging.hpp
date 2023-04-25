@@ -16,16 +16,19 @@
 #define RMW_FASTRTPS_SHARED_CPP__RMW_SECURITY_LOGGING_HPP_
 
 #include "fastdds/rtps/attributes/PropertyPolicy.h"
-
 #include "rmw_fastrtps_shared_cpp/visibility_control.h"
 
+/// 应用任何请求的安全日志配置到策略中。
 /// Apply any requested security logging configuration to the policy.
 /**
- * \param policy policy to which security logging properties may be added.
+ * \param[in] policy 可能添加安全日志属性的策略。
+ * \param[in] policy policy to which security logging properties may be added.
+ * \returns 如果请求的配置无法应用（将设置rmw错误），则返回false。
  * \returns false if the requested configuration could not be applied (rmw error will be set).
+ * \returns 如果应用了请求的配置（或者没有请求配置），则返回true。
  * \returns true if the requested configuration was applied (or no configuration was requested).
  */
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
-bool apply_security_logging_configuration(eprosima::fastrtps::rtps::PropertyPolicy & policy);
+bool apply_security_logging_configuration(eprosima::fastrtps::rtps::PropertyPolicy& policy);
 
 #endif  // RMW_FASTRTPS_SHARED_CPP__RMW_SECURITY_LOGGING_HPP_

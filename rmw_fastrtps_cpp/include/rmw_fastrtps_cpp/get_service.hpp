@@ -17,34 +17,38 @@
 
 #include "fastdds/dds/publisher/DataWriter.hpp"
 #include "fastdds/dds/subscriber/DataReader.hpp"
-
 #include "rmw/rmw.h"
 #include "rmw_fastrtps_cpp/visibility_control.h"
 
-namespace rmw_fastrtps_cpp
-{
+namespace rmw_fastrtps_cpp {
 
-/// Return a native Fast DDS DataReader handle for the request.
+/// 返回一个用于请求的原生 Fast DDS DataReader 句柄。 (Return a native Fast DDS DataReader handle
+/// for the request.)
 /**
- * The function returns `NULL` when either the service handle is `NULL` or
- * when the service handle is from a different rmw implementation.
+ * 当服务句柄为 `NULL` 或服务句柄来自不同的 rmw 实现时，该函数返回 `NULL`。
+ * (The function returns `NULL` when either the service handle is `NULL` or
+ * when the service handle is from a different rmw implementation.)
  *
- * \return native Fast DDS DataReader handle if successful, otherwise `NULL`
+ * \param[in] service 传入的 rmw_service_t 类型指针。 (Pointer to an rmw_service_t object.)
+ * \return 如果成功，则返回原生 Fast DDS DataReader 句柄；否则返回 `NULL`。
+ * (native Fast DDS DataReader handle if successful, otherwise `NULL`)
  */
 RMW_FASTRTPS_CPP_PUBLIC
-eprosima::fastdds::dds::DataReader *
-get_request_datareader(rmw_service_t * service);
+eprosima::fastdds::dds::DataReader* get_request_datareader(rmw_service_t* service);
 
-/// Return a native Fast DDS DataWriter handle for the response.
+/// 返回一个用于响应的原生 Fast DDS DataWriter 句柄。 (Return a native Fast DDS DataWriter handle
+/// for the response.)
 /**
- * The function returns `NULL` when either the service handle is `NULL` or
- * when the service handle is from a different rmw implementation.
+ * 当服务句柄为 `NULL` 或服务句柄来自不同的 rmw 实现时，该函数返回 `NULL`。
+ * (The function returns `NULL` when either the service handle is `NULL` or
+ * when the service handle is from a different rmw implementation.)
  *
- * \return native Fast DDS DataWriter handle if successful, otherwise `NULL`
+ * \param[in] service 传入的 rmw_service_t 类型指针。 (Pointer to an rmw_service_t object.)
+ * \return 如果成功，则返回原生 Fast DDS DataWriter 句柄；否则返回 `NULL`。
+ * (native Fast DDS DataWriter handle if successful, otherwise `NULL`)
  */
 RMW_FASTRTPS_CPP_PUBLIC
-eprosima::fastdds::dds::DataWriter *
-get_response_datawriter(rmw_service_t * service);
+eprosima::fastdds::dds::DataWriter* get_response_datawriter(rmw_service_t* service);
 
 }  // namespace rmw_fastrtps_cpp
 
