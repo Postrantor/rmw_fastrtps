@@ -33,9 +33,8 @@
 class EventListenerInterface {
 public:
   /**
-   * @brief 获取状态条件引用 (Get the reference to the StatusCondition)
-   * @return eprosima::fastdds::dds::StatusCondition& 状态条件引用 (Reference to the
-   * StatusCondition)
+   * @brief 获取状态条件引用
+   * @return eprosima::fastdds::dds::StatusCondition& 状态条件引用
    */
   virtual eprosima::fastdds::dds::StatusCondition& get_statuscondition() const = 0;
 
@@ -50,32 +49,28 @@ public:
    */
   virtual bool take_event(rmw_event_type_t event_type, void* event_info) = 0;
 
-  /// 当此监听器的新事件发生时，提供处理程序执行操作 (Provide handlers to perform an action when a
-  /// new event from this listener has occurred)
+  /// 当此监听器的新事件发生时，提供处理程序执行操作
   /**
-   * @param[in] event_type 要为其设置新回调的事件类型 (The event type to set a new callback for)
-   * @param[in] user_data 与事件关联的用户数据 (User data to associated with the event)
-   * @param[in] callback 当事件发生时调用的回调 (The callback to call when the event occurs)
+   * @param[in] event_type 要为其设置新回调的事件类型
+   * @param[in] user_data 与事件关联的用户数据
+   * @param[in] callback 当事件发生时调用的回调
    */
   virtual void set_on_new_event_callback(
       rmw_event_type_t event_type, const void* user_data, rmw_event_callback_t callback) = 0;
 
   /**
-   * @brief 获取事件保护条件引用 (Get the reference to the GuardCondition for an event type)
-   * @param[in] event_type 要获取保护条件的事件类型 (The event type to get the GuardCondition for)
-   * @return eprosima::fastdds::dds::GuardCondition& 事件保护条件引用 (Reference to the
-   * GuardCondition)
+   * @brief 获取事件保护条件引用
+   * @param[in] event_type 要获取保护条件的事件类型
+   * @return eprosima::fastdds::dds::GuardCondition& 事件保护条件引用
    */
   eprosima::fastdds::dds::GuardCondition& get_event_guard(rmw_event_type_t event_type) {
     return event_guard[event_type];
   }
 
-  /// 更新内部不一致主题数据的回调 (Callback to update the internal inconsistent topic data)
+  /// 更新内部不一致主题数据的回调
   /**
-   * @param[in] total_count 所有时间的不一致主题事件总数 (The total number of inconsistent topic
-   * events for all time)
-   * @param[in] total_count_change 正在报告的不一致主题事件数量 (The number of inconsistent topic
-   * events being reported right now)
+   * @param[in] total_count 所有时间的不一致主题事件总数
+   * @param[in] total_count_change 正在报告的不一致主题事件数量
    */
   virtual void update_inconsistent_topic(uint32_t total_count, uint32_t total_count_change) = 0;
 

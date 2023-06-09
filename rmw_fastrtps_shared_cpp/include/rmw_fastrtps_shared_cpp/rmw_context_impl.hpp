@@ -23,23 +23,14 @@
  */
 struct rmw_context_impl_s {
   /// 指向 `rmw_dds_common::Context` 的指针
-  /// Pointer to `rmw_dds_common::Context`
   void* common;
-
   /// 指向 `rmw_fastrtps_shared_cpp::CustomParticipantInfo` 的指针
-  /// Pointer to `rmw_fastrtps_shared_cpp::CustomParticipantInfo`
   void* participant_info;
-
   /// 用于保护初始化/销毁过程的互斥锁
-  /// Mutex used to protect initialization/destruction
   std::mutex mutex;
-
   /// 引用计数
-  /// Reference count
   uint64_t count;
-
   /// 关闭标志
-  /// Shutdown flag
   bool is_shutdown;
 };
 

@@ -25,30 +25,23 @@ namespace rmw_fastrtps_cpp {
 */
 
 /**
- * @brief 获取数据写入器 (Get the data writer)
+ * @brief 获取数据写入器
  *
- * @param[in] publisher RMW发布者指针 (Pointer to the RMW publisher)
- * @return eprosima::fastdds::dds::DataWriter* 数据写入器指针，如果失败则返回nullptr (Pointer to the
- * data writer, nullptr if failed)
+ * @param[in] publisher RMW发布者指针
+ * @return eprosima::fastdds::dds::DataWriter* 数据写入器指针，如果失败则返回nullptr
  */
 eprosima::fastdds::dds::DataWriter *get_datawriter(rmw_publisher_t *publisher) {
-  // 1. 检查传入的发布者是否为空 (Check if the input publisher is nullptr)
+  // 1. 检查传入的发布者是否为空
   if (!publisher) {
-    return nullptr;  // 如果发布者为空，则返回nullptr (Return nullptr if the publisher is nullptr)
+    return nullptr;  // 如果发布者为空，则返回nullptr
   }
-
-  // 2. 检查发布者的实现标识符是否为 eprosima_fastrtps_identifier (Check if the publisher's
-  // implementation_identifier is eprosima_fastrtps_identifier)
+  // 2. 检查发布者的实现标识符是否为 eprosima_fastrtps_identifier
   if (publisher->implementation_identifier != eprosima_fastrtps_identifier) {
-    return nullptr;  // 如果实现标识符不匹配，则返回nullptr (Return nullptr if the
-                     // implementation_identifier does not match)
+    return nullptr;  // 如果实现标识符不匹配，则返回nullptr
   }
-
-  // 3. 将发布者的数据转换为 CustomPublisherInfo 类型 (Cast the publisher's data to
-  // CustomPublisherInfo type)
+  // 3. 将发布者的数据转换为 CustomPublisherInfo 类型
   auto impl = static_cast<CustomPublisherInfo *>(publisher->data);
-
-  // 4. 返回数据写入器指针 (Return the data writer pointer)
+  // 4. 返回数据写入器指针
   return impl->data_writer_;
 }
 

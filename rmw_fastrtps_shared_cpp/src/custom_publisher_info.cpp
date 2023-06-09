@@ -113,9 +113,6 @@ void CustomDataWriterListener::on_offered_incompatible_qos(
 /**
  * @brief 构造函数，初始化 RMWPublisherEvent 对象。
  * @param info 自定义发布者信息指针。
- *
- * @brief Constructor, initializes the RMWPublisherEvent object.
- * @param info Pointer to custom publisher information.
  */
 RMWPublisherEvent::RMWPublisherEvent(CustomPublisherInfo *info)
     : publisher_info_(info),
@@ -127,9 +124,6 @@ RMWPublisherEvent::RMWPublisherEvent(CustomPublisherInfo *info)
 /**
  * @brief 获取状态条件。
  * @return 状态条件的引用。
- *
- * @brief Get the status condition.
- * @return Reference to the status condition.
  */
 eprosima::fastdds::dds::StatusCondition &RMWPublisherEvent::get_statuscondition() const {
   return publisher_info_->data_writer_->get_statuscondition();
@@ -140,11 +134,6 @@ eprosima::fastdds::dds::StatusCondition &RMWPublisherEvent::get_statuscondition(
  * @param event_type 事件类型。
  * @param event_info 事件信息指针。
  * @return 如果成功处理事件，则返回 true，否则返回 false。
- *
- * @brief Handle the event.
- * @param event_type The type of the event.
- * @param event_info Pointer to the event information.
- * @return Returns true if the event is successfully handled, otherwise returns false.
  */
 bool RMWPublisherEvent::take_event(rmw_event_type_t event_type, void *event_info) {
   assert(rmw_fastrtps_shared_cpp::internal::is_event_supported(event_type));
@@ -152,8 +141,7 @@ bool RMWPublisherEvent::take_event(rmw_event_type_t event_type, void *event_info
   std::unique_lock<std::mutex> lock_mutex(on_new_event_m_);
 
   /**
-   * @brief 处理不同类型的事件并更新相应的状态信息 (Handle different types of events and update the
-   * corresponding status information)
+   * @brief 处理不同类型的事件并更新相应的状态信息
    *
    * @param[in] event_type 事件类型 (Event type)
    * @param[out] event_info 用于存储事件状态信息的指针 (Pointer to store event status information)
@@ -161,8 +149,7 @@ bool RMWPublisherEvent::take_event(rmw_event_type_t event_type, void *event_info
   switch (event_type) {
     // 处理活跃度丢失事件 (Handle Liveliness Lost event)
     case RMW_EVENT_LIVELINESS_LOST: {
-      // 将 event_info 转换为 rmw_liveliness_lost_status_t 类型指针 (Cast event_info to
-      // rmw_liveliness_lost_status_t pointer)
+      // 将 event_info 转换为 rmw_liveliness_lost_status_t 类型指针
       auto rmw_data = static_cast<rmw_liveliness_lost_status_t *>(event_info);
 
       // 检查活跃度是否已经改变 (Check if liveliness has already changed)
@@ -181,8 +168,7 @@ bool RMWPublisherEvent::take_event(rmw_event_type_t event_type, void *event_info
 
     // 处理提供的截止时间错过事件 (Handle Offered Deadline Missed event)
     case RMW_EVENT_OFFERED_DEADLINE_MISSED: {
-      // 将 event_info 转换为 rmw_offered_deadline_missed_status_t 类型指针 (Cast event_info to
-      // rmw_offered_deadline_missed_status_t pointer)
+      // 将 event_info 转换为 rmw_offered_deadline_missed_status_t 类型指针
       auto rmw_data = static_cast<rmw_offered_deadline_missed_status_t *>(event_info);
 
       // 检查截止时间是否已经改变 (Check if deadline has already changed)
@@ -202,8 +188,7 @@ bool RMWPublisherEvent::take_event(rmw_event_type_t event_type, void *event_info
 
     // 处理提供的 QoS 不兼容事件 (Handle Offered QoS Incompatible event)
     case RMW_EVENT_OFFERED_QOS_INCOMPATIBLE: {
-      // 将 event_info 转换为 rmw_offered_qos_incompatible_event_status_t 类型指针 (Cast event_info
-      // to rmw_offered_qos_incompatible_event_status_t pointer)
+      // 将 event_info 转换为 rmw_offered_qos_incompatible_event_status_t 类型指针
       auto rmw_data = static_cast<rmw_offered_qos_incompatible_event_status_t *>(event_info);
 
       // 检查 QoS 是否已经改变 (Check if QoS has already changed)
@@ -224,58 +209,45 @@ bool RMWPublisherEvent::take_event(rmw_event_type_t event_type, void *event_info
       incompatible_qos_status_.total_count_change = 0;
     } break;
     // 当事件类型为 RMW_EVENT_PUBLISHER_INCOMPATIBLE_TYPE 时的处理逻辑。
-    // Handling logic when the event type is RMW_EVENT_PUBLISHER_INCOMPATIBLE_TYPE.
     case RMW_EVENT_PUBLISHER_INCOMPATIBLE_TYPE: {
       // 将 event_info 转换为 rmw_incompatible_type_status_t 类型。
-      // Cast event_info to rmw_incompatible_type_status_t type.
       auto rmw_data = static_cast<rmw_incompatible_type_status_t *>(event_info);
 
       // 检查 inconsistent_topic_changed_ 是否已更改。
-      // Check if inconsistent_topic_changed_ has changed.
       if (inconsistent_topic_changed_) {
         inconsistent_topic_changed_ = false;
       } else {
         // 获取不一致主题状态。
-        // Get the inconsistent topic status.
         publisher_info_->data_writer_->get_topic()->get_inconsistent_topic_status(
             inconsistent_topic_status_);
       }
 
       // 更新 rmw_data 的 total_count 和 total_count_change。
-      // Update rmw_data's total_count and total_count_change.
       rmw_data->total_count = inconsistent_topic_status_.total_count;
       rmw_data->total_count_change = inconsistent_topic_status_.total_count_change;
 
       // 重置 total_count_change。
-      // Reset total_count_change.
       inconsistent_topic_status_.total_count_change = 0;
     } break;
 
     // 当事件类型为 RMW_EVENT_PUBLICATION_MATCHED 时的处理逻辑。
-    // Handling logic when the event type is RMW_EVENT_PUBLICATION_MATCHED.
     case RMW_EVENT_PUBLICATION_MATCHED: {
       // 将 event_info 转换为 rmw_matched_status_t 类型。
-      // Cast event_info to rmw_matched_status_t type.
       auto rmw_data = static_cast<rmw_matched_status_t *>(event_info);
 
       // 定义一个 PublicationMatchedStatus 类型的变量 matched_status。
-      // Define a variable of type PublicationMatchedStatus named matched_status.
       eprosima::fastdds::dds::PublicationMatchedStatus matched_status;
 
       // 获取 publication_matched_status。
-      // Get the publication_matched_status.
       publisher_info_->data_writer_->get_publication_matched_status(matched_status);
 
       // 更新 rmw_data 的 total_count、current_count、total_count_change 和 current_count_change。
-      // Update rmw_data's total_count, current_count, total_count_change, and current_count_change.
       rmw_data->total_count = static_cast<size_t>(matched_status.total_count);
       rmw_data->current_count = static_cast<size_t>(matched_status.current_count);
       rmw_data->total_count_change = static_cast<size_t>(matched_status.total_count_change);
       rmw_data->current_count_change = matched_status.current_count_change;
 
       // 如果存在匹配的更改，则更新 rmw_data 的 total_count_change 和 current_count_change。
-      // If there are matched changes, update rmw_data's total_count_change and
-      // current_count_change.
       if (matched_changes_) {
         rmw_data->total_count_change += static_cast<size_t>(matched_status_.total_count_change);
         rmw_data->current_count_change += matched_status_.current_count_change;
@@ -283,19 +255,16 @@ bool RMWPublisherEvent::take_event(rmw_event_type_t event_type, void *event_info
       }
 
       // 重置 total_count_change 和 current_count_change。
-      // Reset total_count_change and current_count_change.
       matched_status_.total_count_change = 0;
       matched_status_.current_count_change = 0;
     } break;
 
     // 对于未知事件类型，返回 false。
-    // For unknown event types, return false.
     default:
       return false;
   }
 
   // 设置 event_guard[event_type] 的触发值为 false。
-  // Set the trigger value of event_guard[event_type] to false.
   event_guard[event_type].set_trigger_value(false);
 
   return true;
@@ -308,7 +277,6 @@ bool RMWPublisherEvent::take_event(rmw_event_type_t event_type, void *event_info
  * @param callback 回调函数 (Callback function)
  *
  * 当事件发生时，此函数将设置一个回调函数来处理这些事件。
- * (This function sets a callback to handle events when they occur.)
  */
 void RMWPublisherEvent::set_on_new_event_callback(
     rmw_event_type_t event_type, const void *user_data, rmw_event_callback_t callback) {
@@ -326,8 +294,7 @@ void RMWPublisherEvent::set_on_new_event_callback(
         // 获取活跃度丢失状态 (Get the liveliness lost status)
         publisher_info_->data_writer_->get_liveliness_lost_status(liveliness_lost_status_);
 
-        // 如果活跃度丢失计数有变化，则调用回调函数 (Call the callback if there is a change in the
-        // liveliness lost count)
+        // 如果活跃度丢失计数有变化，则调用回调函数
         if (liveliness_lost_status_.total_count_change > 0) {
           callback(user_data, liveliness_lost_status_.total_count_change);
           liveliness_lost_status_.total_count_change = 0;
@@ -338,8 +305,7 @@ void RMWPublisherEvent::set_on_new_event_callback(
         publisher_info_->data_writer_->get_offered_deadline_missed_status(
             offered_deadline_missed_status_);
 
-        // 如果截止日期未满足计数有变化，则调用回调函数 (Call the callback if there is a change in
-        // the deadline missed count)
+        // 如果截止日期未满足计数有变化，则调用回调函数
         if (offered_deadline_missed_status_.total_count_change > 0) {
           callback(user_data, offered_deadline_missed_status_.total_count_change);
           offered_deadline_missed_status_.total_count_change = 0;
@@ -350,8 +316,7 @@ void RMWPublisherEvent::set_on_new_event_callback(
         publisher_info_->data_writer_->get_offered_incompatible_qos_status(
             incompatible_qos_status_);
 
-        // 如果 QoS 不兼容计数有变化，则调用回调函数 (Call the callback if there is a change in the
-        // incompatible QoS count)
+        // 如果 QoS 不兼容计数有变化，则调用回调函数
         if (incompatible_qos_status_.total_count_change > 0) {
           callback(user_data, incompatible_qos_status_.total_count_change);
           incompatible_qos_status_.total_count_change = 0;
@@ -361,16 +326,14 @@ void RMWPublisherEvent::set_on_new_event_callback(
         // 获取发布者不兼容类型状态 (Get the publisher incompatible type status)
         publisher_info_->data_writer_->get_topic()->get_inconsistent_topic_status(
             inconsistent_topic_status_);
-        // 如果不兼容类型计数有变化，则调用回调函数 (Call the callback if there is a change in the
-        // incompatible type count)
+        // 如果不兼容类型计数有变化，则调用回调函数
         if (inconsistent_topic_status_.total_count_change > 0) {
           callback(user_data, inconsistent_topic_status_.total_count_change);
           inconsistent_topic_status_.total_count_change = 0;
         }
         break;
       case RMW_EVENT_PUBLICATION_MATCHED: {
-        // 如果匹配状态计数有变化，则调用回调函数 (Call the callback if there is a change in the
-        // matched status count)
+        // 如果匹配状态计数有变化，则调用回调函数
         if (matched_status_.total_count_change > 0) {
           callback(user_data, matched_status_.total_count_change);
           publisher_info_->data_writer_->get_publication_matched_status(matched_status_);
@@ -382,7 +345,7 @@ void RMWPublisherEvent::set_on_new_event_callback(
         break;
     }
 
-    // 存储用户数据和回调函数 (Store the user data and callback function)
+    // 存储用户数据和回调函数
     user_data_[event_type] = user_data;
     on_new_event_cb_[event_type] = callback;
 
@@ -393,8 +356,7 @@ void RMWPublisherEvent::set_on_new_event_callback(
     user_data_[event_type] = nullptr;
     on_new_event_cb_[event_type] = nullptr;
 
-    // publication_matched 状态应保持启用，因为我们需要继续跟踪匹配的订阅 (The publication_matched
-    // status should be kept enabled, since we need to keep tracking matched subscriptions)
+    // publication_matched 状态应保持启用，因为我们需要继续跟踪匹配的订阅
     if (RMW_EVENT_PUBLICATION_MATCHED != event_type) {
       status_mask &= ~rmw_fastrtps_shared_cpp::internal::rmw_event_to_dds_statusmask(event_type);
     }
@@ -410,10 +372,9 @@ void RMWPublisherEvent::set_on_new_event_callback(
  * @param guid 订阅的全局唯一标识符 (Global Unique Identifier of the subscription)
  */
 void RMWPublisherEvent::track_unique_subscription(eprosima::fastrtps::rtps::GUID_t guid) {
-  // 对 subscriptions_mutex_ 上锁，以保护共享资源 subscriptions_ (Lock subscriptions_mutex_ to
-  // protect shared resource subscriptions_)
+  // 对 subscriptions_mutex_ 上锁，以保护共享资源 subscriptions_
   std::lock_guard<std::mutex> lock(subscriptions_mutex_);
-  // 将 guid 插入到 subscriptions_ 集合中 (Insert guid into the subscriptions_ set)
+  // 将 guid 插入到 subscriptions_ 集合中
   subscriptions_.insert(guid);
 }
 
@@ -423,8 +384,7 @@ void RMWPublisherEvent::track_unique_subscription(eprosima::fastrtps::rtps::GUID
  * @param guid 订阅的全局唯一标识符 (Global Unique Identifier of the subscription)
  */
 void RMWPublisherEvent::untrack_unique_subscription(eprosima::fastrtps::rtps::GUID_t guid) {
-  // 对 subscriptions_mutex_ 上锁，以保护共享资源 subscriptions_ (Lock subscriptions_mutex_ to
-  // protect shared resource subscriptions_)
+  // 对 subscriptions_mutex_ 上锁，以保护共享资源 subscriptions_
   std::lock_guard<std::mutex> lock(subscriptions_mutex_);
   // 从 subscriptions_ 集合中删除 guid (Erase guid from the subscriptions_ set)
   subscriptions_.erase(guid);

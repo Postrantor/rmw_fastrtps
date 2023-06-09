@@ -21,14 +21,11 @@
 
 namespace rmw_fastrtps_cpp {
 
-/// 返回一个原生的 Fast DDS DataReader 句柄。 (Return a native Fast DDS DataReader handle.)
+/// 返回一个原生的 Fast DDS DataReader 句柄。
 /**
  * 当订阅句柄为 `NULL` 或来自不同的 rmw 实现时，该函数返回 `NULL`。
- * (The function returns `NULL` when either the subscription handle is `NULL` or
- * when the subscription handle is from a different rmw implementation.)
  *
  * \return 如果成功，则返回原生的 Fast DDS DataReader 句柄；否则返回 `NULL`
- * (native Fast DDS DataReader handle if successful, otherwise `NULL`)
  */
 RMW_FASTRTPS_CPP_PUBLIC
 eprosima::fastdds::dds::DataReader* get_datareader(rmw_subscription_t* subscription);

@@ -20,30 +20,22 @@
 
 namespace rmw_fastrtps_cpp {
 
-/**
- * @brief 获取域参与者 (Get the domain participant)
+/** @brief 获取域参与者
  *
- * @param[in] node RMW节点指针 (Pointer to the RMW node)
- * @return eprosima::fastdds::dds::DomainParticipant* 域参与者指针，如果失败则返回nullptr (Pointer
- * to the domain participant, nullptr if failed)
+ * @param[in] node RMW节点指针
+ * @return eprosima::fastdds::dds::DomainParticipant* 域参与者指针，如果失败则返回nullptr
  */
 eprosima::fastdds::dds::DomainParticipant *get_domain_participant(rmw_node_t *node) {
-  // 检查传入的节点是否为空 (Check if the input node is nullptr)
+  // 检查传入的节点是否为空
   if (!node) {
-    return nullptr;  // 如果节点为空，则返回nullptr (Return nullptr if the node is nullptr)
+    return nullptr;  // 如果节点为空，则返回nullptr
   }
-
-  // 检查节点的实现标识符是否为 eprosima_fastrtps_identifier (Check if the node's
-  // implementation_identifier is eprosima_fastrtps_identifier)
+  // 检查节点的实现标识符是否为 eprosima_fastrtps_identifier
   if (node->implementation_identifier != eprosima_fastrtps_identifier) {
-    return nullptr;  // 如果实现标识符不匹配，则返回nullptr (Return nullptr if the
-                     // implementation_identifier does not match)
+    return nullptr;  // 如果实现标识符不匹配，则返回nullptr
   }
-
-  // 将节点的参与者信息转换为 CustomParticipantInfo 类型 (Cast the node's participant_info to
-  // CustomParticipantInfo type)
+  // 将节点的参与者信息转换为 CustomParticipantInfo 类型
   auto impl = static_cast<CustomParticipantInfo *>(node->context->impl->participant_info);
-
   // 返回域参与者指针 (Return the domain participant pointer)
   return impl->participant_;
 }

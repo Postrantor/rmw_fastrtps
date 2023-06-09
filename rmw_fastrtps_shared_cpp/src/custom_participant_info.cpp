@@ -25,9 +25,8 @@
 #include "rcutils/logging_macros.h"
 
 /**
- * @brief 构造函数，创建一个 CustomTopicListener 对象 (Constructor, creates a CustomTopicListener
- * object)
- * @param event_listener 事件监听器接口指针 (Pointer to the EventListenerInterface)
+ * @brief 构造函数，创建一个 CustomTopicListener 对象
+ * @param event_listener 事件监听器接口指针
  */
 CustomTopicListener::CustomTopicListener(EventListenerInterface* event_listener) {
   // 添加事件监听器 (Add event listener)
@@ -35,9 +34,9 @@ CustomTopicListener::CustomTopicListener(EventListenerInterface* event_listener)
 }
 
 /**
- * @brief 当主题不一致时的回调函数 (Callback function when there is an inconsistent topic)
- * @param topic 主题指针 (Pointer to the Topic)
- * @param status 不一致主题状态 (InconsistentTopicStatus)
+ * @brief 当主题不一致时的回调函数
+ * @param topic 主题指针
+ * @param status 不一致主题状态
  */
 void CustomTopicListener::on_inconsistent_topic(
     eprosima::fastdds::dds::Topic* topic, eprosima::fastdds::dds::InconsistentTopicStatus status) {
@@ -46,35 +45,33 @@ void CustomTopicListener::on_inconsistent_topic(
     return;
   }
 
-  // 使用互斥锁保护事件监听器列表 (Protect the event listeners list with a mutex lock)
+  // 使用互斥锁保护事件监听器列表
   std::lock_guard<std::mutex> lck(event_listeners_mutex_);
-  // 遍历事件监听器列表，更新不一致主题计数 (Iterate through the event listeners list and update the
-  // inconsistent topic count)
+  // 遍历事件监听器列表，更新不一致主题计数
   for (EventListenerInterface* listener : event_listeners_) {
     listener->update_inconsistent_topic(status.total_count, status.total_count_change);
   }
 }
 
 /**
- * @brief 添加事件监听器 (Add an event listener)
- * @param event_listener 事件监听器接口指针 (Pointer to the EventListenerInterface)
+ * @brief 添加事件监听器
+ * @param event_listener 事件监听器接口指针
  */
 void CustomTopicListener::add_event_listener(EventListenerInterface* event_listener) {
-  // 允许空的事件监听器，但不会对它们进行报告 (Allow for null event listeners, but they will not be
-  // reported on)
+  // 允许空的事件监听器，但不会对它们进行报告
   if (event_listener == nullptr) {
     return;
   }
 
-  // 使用互斥锁保护事件监听器列表 (Protect the event listeners list with a mutex lock)
+  // 使用互斥锁保护事件监听器列表
   std::lock_guard<std::mutex> lck(event_listeners_mutex_);
-  // 将事件监听器插入到列表中 (Insert the event listener into the list)
+  // 将事件监听器插入到列表中
   event_listeners_.insert(event_listener);
 }
 
 /**
  * @brief 移除事件监听器 (Remove an event listener)
- * @param event_listener 事件监听器接口指针 (Pointer to the EventListenerInterface)
+ * @param event_listener 事件监听器接口指针
  */
 void CustomTopicListener::remove_event_listener(EventListenerInterface* event_listener) {
   // 如果事件监听器为空，则返回 (If the event listener is nullptr, return)
@@ -82,9 +79,9 @@ void CustomTopicListener::remove_event_listener(EventListenerInterface* event_li
     return;
   }
 
-  // 使用互斥锁保护事件监听器列表 (Protect the event listeners list with a mutex lock)
+  // 使用互斥锁保护事件监听器列表
   std::lock_guard<std::mutex> lck(event_listeners_mutex_);
-  // 从列表中删除事件监听器 (Erase the event listener from the list)
+  // 从列表中删除事件监听器
   event_listeners_.erase(event_listener);
 }
 
@@ -105,14 +102,13 @@ eprosima::fastdds::dds::Topic* CustomParticipantInfo::find_or_create_topic(
   // 初始化主题指针为空 (Initialize the topic pointer as nullptr)
   eprosima::fastdds::dds::Topic* topic = nullptr;
 
-  // 对topic_name_to_topic_mutex_进行加锁，防止多线程冲突 (Lock the topic_name_to_topic_mutex_ to
-  // prevent multi-threading conflicts)
+  // 对topic_name_to_topic_mutex_进行加锁，防止多线程冲突
   std::lock_guard<std::mutex> lck(topic_name_to_topic_mutex_);
-  // 查找主题名称是否已存在于映射中 (Check if the topic name already exists in the map)
+  // 查找主题名称是否已存在于映射中
   std::map<std::string, std::unique_ptr<UseCountTopic>>::const_iterator it =
       topic_name_to_topic_.find(topic_name);
   if (it == topic_name_to_topic_.end()) {
-    // 如果映射中不存在，则需要添加新主题 (If not in the map, we need to add a new topic)
+    // 如果映射中不存在，则需要添加新主题
     topic = participant_->create_topic(topic_name, type_name, topic_qos);
 
     // 创建一个新的UseCountTopic对象 (Create a new UseCountTopic object)
@@ -125,7 +121,7 @@ eprosima::fastdds::dds::Topic* CustomParticipantInfo::find_or_create_topic(
     // 将新创建的主题添加到映射中 (Add the newly created topic to the map)
     topic_name_to_topic_[topic_name] = std::move(uct);
   } else {
-    // 如果映射中已存在，则增加使用计数 (If already in the map, just increase the use count)
+    // 如果映射中已存在，则增加使用计数
     it->second->use_count++;
     it->second->topic_listener->add_event_listener(event_listener);
     topic = it->second->topic;
@@ -135,41 +131,38 @@ eprosima::fastdds::dds::Topic* CustomParticipantInfo::find_or_create_topic(
 }
 
 /**
- * @brief 删除一个主题 (Delete a topic)
+ * @brief 删除一个主题
  *
- * @param[in] topic 要删除的主题指针 (Pointer to the topic to be deleted)
- * @param[in] event_listener 事件监听器接口 (Event Listener Interface)
+ * @param[in] topic 要删除的主题指针
+ * @param[in] event_listener 事件监听器接口
  */
 void CustomParticipantInfo::delete_topic(
     const eprosima::fastdds::dds::Topic* topic, EventListenerInterface* event_listener) {
-  // 如果主题为空，则直接返回 (If the topic is nullptr, return directly)
+  // 如果主题为空，则直接返回
   if (topic == nullptr) {
     return;
   }
 
-  // 对topic_name_to_topic_mutex_进行加锁，防止多线程冲突 (Lock the topic_name_to_topic_mutex_ to
-  // prevent multi-threading conflicts)
+  // 对topic_name_to_topic_mutex_进行加锁，防止多线程冲突
   std::lock_guard<std::mutex> lck(topic_name_to_topic_mutex_);
-  // 查找主题名称是否已存在于映射中 (Check if the topic name already exists in the map)
+  // 查找主题名称是否已存在于映射中
   std::map<std::string, std::unique_ptr<UseCountTopic>>::const_iterator it =
       topic_name_to_topic_.find(topic->get_name());
 
   if (it != topic_name_to_topic_.end()) {
-    // 减少使用计数 (Decrease the use count)
+    // 减少使用计数
     it->second->use_count--;
     it->second->topic_listener->remove_event_listener(event_listener);
-    // 如果使用计数为0，则删除主题 (If the use count is 0, delete the topic)
+    // 如果使用计数为0，则删除主题
     if (it->second->use_count <= 0) {
       participant_->delete_topic(it->second->topic);
-
-      // 删除主题监听器 (Delete the topic listener)
+      // 删除主题监听器
       delete it->second->topic_listener;
-
-      // 从映射中移除主题 (Remove the topic from the map)
+      // 从映射中移除主题
       topic_name_to_topic_.erase(it);
     }
   } else {
-    // 如果映射中不存在该主题，则发出警告 (If the topic does not exist in the map, issue a warning)
+    // 如果映射中不存在该主题，则发出警告
     RCUTILS_LOG_WARN_NAMED(
         "rmw_fastrtps_shared_cpp",
         "Attempted to delete topic '%s', but it was never created.  Ignoring",

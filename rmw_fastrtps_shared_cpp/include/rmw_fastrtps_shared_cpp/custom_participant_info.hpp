@@ -116,7 +116,7 @@ typedef struct UseCountTopic {
 } UseCountTopic;
 
 /**
- * @brief 自定义参与者信息结构体 (Custom participant information structure)
+ * @brief 自定义参与者信息结构体)
  *
  */
 typedef struct CustomParticipantInfo {
@@ -131,12 +131,6 @@ typedef struct CustomParticipantInfo {
   // create_topic()。 因此，我们需要检查该主题是否已经创建。如果已创建，则增加我们跟踪的
   // use_count，并返回现有主题。
   // 如果没有创建，则创建一个新主题并开始跟踪它。一旦删除了所有主题的用户，我们将删除该主题。
-  // (As of 2023-02-07, Fast-DDS only allows one create_topic() with the same
-  // topic name per DomainParticipant. Thus, we need to check if the topic
-  // was already created. If it did, then we just increase the use_count
-  // that we are tracking, and return the existing topic. If it
-  // didn't, then we create a new one and start tracking it. Once all
-  // users of the topic are removed, we will delete the topic.)
   std::map<std::string, std::unique_ptr<UseCountTopic>> topic_name_to_topic_;
 
   // 发布者指针 (Publisher pointer)
@@ -144,17 +138,11 @@ typedef struct CustomParticipantInfo {
   // 订阅者指针 (Subscriber pointer)
   eprosima::fastdds::dds::Subscriber *subscriber_{nullptr};
 
-  // 保护主题、读取器和写入器的创建和销毁的互斥锁 (Mutex to protect creation and destruction of
-  // topics, readers and writers)
+  // 保护主题、读取器和写入器的创建和销毁的互斥锁
   mutable std::mutex entity_creation_mutex_;
 
   // 标志，用于确定 DomainParticipant 的 QoS、其 DataWriters 和 DataReaders 的 QoS
   // 是否仅从 XML 文件中配置，还是通过代码使用默认配置覆盖它们的设置。
-  // (Flag to establish if the QoS of the DomainParticipant,
-  // its DataWriters, and its DataReaders are going
-  // to be configured only from an XML file or if
-  // their settings are going to be overwritten by code
-  // with the default configuration.)
   bool leave_middleware_default_qos;
   publishing_mode_t publishing_mode;
 
@@ -175,19 +163,14 @@ typedef struct CustomParticipantInfo {
 /**
  * @class ParticipantListener
  * @brief 自定义参与者监听器，继承自 eprosima::fastdds::dds::DomainParticipantListener.
- *        Custom participant listener, inherits from
- * eprosima::fastdds::dds::DomainParticipantListener.
  */
 class ParticipantListener : public eprosima::fastdds::dds::DomainParticipantListener {
 public:
   /**
    * @brief 构造函数，初始化参与者监听器。
-   *        Constructor, initializes the participant listener.
    *
-   * @param identifier 指向一个字符串的指针，表示唯一标识符。Pointer to a string representing a
-   * unique identifier.
-   * @param context 指向 rmw_dds_common::Context 的指针，用于存储 ROS2 上下文信息。Pointer to
-   * rmw_dds_common::Context for storing ROS2 context information.
+   * @param identifier 指向一个字符串的指针，表示唯一标识符。
+   * @param context 指向 rmw_dds_common::Context 的指针，用于存储 ROS2 上下文信息。
    */
   explicit ParticipantListener(const char *identifier, rmw_dds_common::Context *context)
       : context(context), identifier_(identifier) {}
@@ -204,33 +187,26 @@ public:
       eprosima::fastrtps::rtps::ParticipantDiscoveryInfo &&info,
       bool &should_be_ignored) override {
     // 初始化 should_be_ignored 为 false
-    // Initialize should_be_ignored to false
     should_be_ignored = false;
 
     // 根据参与者发现状态进行处理
-    // Process according to participant discovery status
     switch (info.status) {
       case eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT: {
         // 解析用户数据中的键值对
-        // Parse key-value pairs in user data
         auto map = rmw::impl::cpp::parse_key_value(info.info.m_userData);
 
         // 查找 "enclave" 键
-        // Find the "enclave" key
         auto name_found = map.find("enclave");
 
         // 如果未找到 "enclave" 键，则返回
-        // If the "enclave" key is not found, return
         if (name_found == map.end()) {
           return;
         }
 
         // 获取 enclave 字符串
-        // Get the enclave string
         auto enclave = std::string(name_found->second.begin(), name_found->second.end());
 
         // 向图缓存中添加参与者
-        // Add participant to the graph cache
         context->graph_cache.add_participant(
             rmw_fastrtps_shared_cpp::create_rmw_gid(identifier_, info.info.m_guid), enclave);
         break;
@@ -239,13 +215,11 @@ public:
       // fall through
       case eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::DROPPED_PARTICIPANT:
         // 从图缓存中移除参与者
-        // Remove participant from the graph cache
         context->graph_cache.remove_participant(
             rmw_fastrtps_shared_cpp::create_rmw_gid(identifier_, info.info.m_guid));
         break;
 
       // 对于其他状态，直接返回
-      // For other statuses, return directly
       default:
         return;
     }
@@ -260,8 +234,7 @@ public:
   void on_subscriber_discovery(
       eprosima::fastdds::dds::DomainParticipant *,
       eprosima::fastrtps::rtps::ReaderDiscoveryInfo &&info) override {
-    // 检查订阅者的状态是否为 CHANGED_QOS_READER (Check if the status of the subscriber is
-    // CHANGED_QOS_READER)
+    // 检查订阅者的状态是否为 CHANGED_QOS_READER
     if (eprosima::fastrtps::rtps::ReaderDiscoveryInfo::CHANGED_QOS_READER != info.status) {
       // 判断订阅者是否存活 (Determine if the subscriber is alive)
       bool is_alive =

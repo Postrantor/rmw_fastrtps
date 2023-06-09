@@ -157,3 +157,378 @@ void RMWPublisherEvent::trigger_event(rmw_event_type_t event_type) {}
 13. **void RMWPublisherEvent::trigger_event(rmw_event_type_t event_type)**：此函数用于触发指定类型的事件。它接收一个参数：事件类型（`event_type`）。
 
 通过这些函数，`RMWPublisherEvent` 类可以处理与发布者相关的各种事件，如订阅跟踪、截止日期、失活、不兼容 QoS 等。这有助于实现 ROS2 发布者与订阅者之间的通信和协调。
+
+---
+
+Crafted by [Genie](https://marketplace.visualstudio.com/items?itemName=genieai.chatgpt-vscode)
+
+---
+
+## You
+
+下面这段代码是在 ros2 项目中 rmw_fastrtps 相关的代码(custom_publisher_info.cpp)，请联系所有函数之间可能的相互联系，梳理、解释这份文件的功能、含义，以及函数之间的功能调用关系（以中文语言输出，不限制字数）
+
+```cpp
+#include "rmw_fastrtps_shared_cpp/custom_publisher_info.hpp"
+
+#include "event_helpers.hpp"
+#include "fastdds/dds/core/policy/QosPolicies.hpp"
+#include "fastdds/dds/core/status/BaseStatus.hpp"
+#include "fastdds/dds/core/status/DeadlineMissedStatus.hpp"
+#include "types/event_types.hpp"
+
+EventListenerInterface *CustomPublisherInfo::get_listener() const { return publisher_event_; }
+
+CustomDataWriterListener::CustomDataWriterListener(RMWPublisherEvent *pub_event)
+    : publisher_event_(pub_event) {}
+
+void CustomDataWriterListener::on_publication_matched(
+    eprosima::fastdds::dds::DataWriter *writer,
+    const eprosima::fastdds::dds::PublicationMatchedStatus &status) {
+  (void)writer;  // 忽略未使用的参数 (Ignore unused parameter)
+
+  if (status.current_count_change == 1) {
+    publisher_event_->track_unique_subscription(
+        eprosima::fastrtps::rtps::iHandle2GUID(status.last_subscription_handle));
+  } else if (status.current_count_change == -1) {
+    publisher_event_->untrack_unique_subscription(
+        eprosima::fastrtps::rtps::iHandle2GUID(status.last_subscription_handle));
+  } else {
+    return;
+  }
+
+  publisher_event_->update_matched(
+      status.total_count, status.total_count_change, status.current_count,
+      status.current_count_change);
+}
+
+void CustomDataWriterListener::on_offered_deadline_missed(
+    eprosima::fastdds::dds::DataWriter *writer,
+    const eprosima::fastdds::dds::OfferedDeadlineMissedStatus &status) {
+  (void)writer;  // 忽略未使用的参数 (Ignore unused parameter)
+
+  publisher_event_->update_deadline(status.total_count, status.total_count_change);
+}
+
+void CustomDataWriterListener::on_liveliness_lost(
+    eprosima::fastdds::dds::DataWriter *writer,
+    const eprosima::fastdds::dds::LivelinessLostStatus &status) {
+  (void)writer;  // 忽略未使用的参数 (Ignore unused parameter)
+
+  publisher_event_->update_liveliness_lost(status.total_count, status.total_count_change);
+}
+
+void CustomDataWriterListener::on_offered_incompatible_qos(
+    eprosima::fastdds::dds::DataWriter *writer,
+    const eprosima::fastdds::dds::OfferedIncompatibleQosStatus &status) {
+  (void)writer;  // 忽略未使用的参数 (Ignore unused parameter)
+
+  publisher_event_->update_offered_incompatible_qos(
+      status.last_policy_id, status.total_count, status.total_count_change);
+}
+
+RMWPublisherEvent::RMWPublisherEvent(CustomPublisherInfo *info)
+    : publisher_info_(info),
+      deadline_changed_(false),
+      liveliness_changed_(false),
+      incompatible_qos_changed_(false),
+      matched_changes_(false) {}
+
+eprosima::fastdds::dds::StatusCondition &RMWPublisherEvent::get_statuscondition() const {
+  return publisher_info_->data_writer_->get_statuscondition();
+}
+
+bool RMWPublisherEvent::take_event(rmw_event_type_t event_type, void *event_info) {
+  assert(rmw_fastrtps_shared_cpp::internal::is_event_supported(event_type));
+
+  std::unique_lock<std::mutex> lock_mutex(on_new_event_m_);
+
+void RMWPublisherEvent::set_on_new_event_callback(
+    rmw_event_type_t event_type, const void *user_data, rmw_event_callback_t callback) {
+  std::unique_lock<std::mutex> lock_mutex(on_new_event_m_);
+
+  eprosima::fastdds::dds::StatusMask status_mask = publisher_info_->data_writer_->get_status_mask();
+
+  if (callback) {
+    switch (event_type) {
+      case RMW_EVENT_LIVELINESS_LOST:
+        publisher_info_->data_writer_->get_liveliness_lost_status(liveliness_lost_status_);
+
+        if (liveliness_lost_status_.total_count_change > 0) {
+          callback(user_data, liveliness_lost_status_.total_count_change);
+          liveliness_lost_status_.total_count_change = 0;
+        }
+        break;
+      case RMW_EVENT_OFFERED_DEADLINE_MISSED:
+        publisher_info_->data_writer_->get_offered_deadline_missed_status(
+            offered_deadline_missed_status_);
+
+        if (offered_deadline_missed_status_.total_count_change > 0) {
+          callback(user_data, offered_deadline_missed_status_.total_count_change);
+          offered_deadline_missed_status_.total_count_change = 0;
+        }
+        break;
+      case RMW_EVENT_OFFERED_QOS_INCOMPATIBLE:
+        publisher_info_->data_writer_->get_offered_incompatible_qos_status(
+            incompatible_qos_status_);
+
+        if (incompatible_qos_status_.total_count_change > 0) {
+          callback(user_data, incompatible_qos_status_.total_count_change);
+          incompatible_qos_status_.total_count_change = 0;
+        }
+        break;
+      case RMW_EVENT_PUBLISHER_INCOMPATIBLE_TYPE:
+        publisher_info_->data_writer_->get_topic()->get_inconsistent_topic_status(
+            inconsistent_topic_status_);
+        if (inconsistent_topic_status_.total_count_change > 0) {
+          callback(user_data, inconsistent_topic_status_.total_count_change);
+          inconsistent_topic_status_.total_count_change = 0;
+        }
+        break;
+      case RMW_EVENT_PUBLICATION_MATCHED: {
+        if (matched_status_.total_count_change > 0) {
+          callback(user_data, matched_status_.total_count_change);
+          publisher_info_->data_writer_->get_publication_matched_status(matched_status_);
+          matched_status_.total_count_change = 0;
+          matched_status_.current_count_change = 0;
+        }
+      } break;
+      default:
+        break;
+    }
+
+    user_data_[event_type] = user_data;
+    on_new_event_cb_[event_type] = callback;
+
+    status_mask |= rmw_fastrtps_shared_cpp::internal::rmw_event_to_dds_statusmask(event_type);
+  } else {
+    user_data_[event_type] = nullptr;
+    on_new_event_cb_[event_type] = nullptr;
+
+    if (RMW_EVENT_PUBLICATION_MATCHED != event_type) {
+      status_mask &= ~rmw_fastrtps_shared_cpp::internal::rmw_event_to_dds_statusmask(event_type);
+    }
+  }
+
+  publisher_info_->data_writer_->set_listener(publisher_info_->data_writer_listener_, status_mask);
+}
+
+void RMWPublisherEvent::track_unique_subscription(eprosima::fastrtps::rtps::GUID_t guid) {
+  std::lock_guard<std::mutex> lock(subscriptions_mutex_);
+  subscriptions_.insert(guid);
+}
+
+void RMWPublisherEvent::untrack_unique_subscription(eprosima::fastrtps::rtps::GUID_t guid) {
+  std::lock_guard<std::mutex> lock(subscriptions_mutex_);
+  subscriptions_.erase(guid);
+}
+
+size_t RMWPublisherEvent::subscription_count() const {
+  std::lock_guard<std::mutex> lock(subscriptions_mutex_);
+  return subscriptions_.size();
+}
+
+void RMWPublisherEvent::update_deadline(uint32_t total_count, uint32_t total_count_change) {
+  std::unique_lock<std::mutex> lock_mutex(on_new_event_m_);
+
+  offered_deadline_missed_status_.total_count = total_count;
+  offered_deadline_missed_status_.total_count_change += total_count_change;
+
+  deadline_changed_ = true;
+
+  trigger_event(RMW_EVENT_OFFERED_DEADLINE_MISSED);
+}
+
+void RMWPublisherEvent::update_liveliness_lost(uint32_t total_count, uint32_t total_count_change) {
+  std::unique_lock<std::mutex> lock_mutex(on_new_event_m_);
+
+  liveliness_lost_status_.total_count = total_count;
+  liveliness_lost_status_.total_count_change += total_count_change;
+
+  liveliness_changed_ = true;
+
+  trigger_event(RMW_EVENT_LIVELINESS_LOST);
+}
+
+void RMWPublisherEvent::update_offered_incompatible_qos(
+    eprosima::fastdds::dds::QosPolicyId_t last_policy_id,
+    uint32_t total_count,
+    uint32_t total_count_change) {
+  std::unique_lock<std::mutex> lock_mutex(on_new_event_m_);
+
+  incompatible_qos_status_.last_policy_id = last_policy_id;
+  incompatible_qos_status_.total_count = total_count;
+  incompatible_qos_status_.total_count_change += total_count_change;
+
+  incompatible_qos_changed_ = true;
+
+  trigger_event(RMW_EVENT_OFFERED_QOS_INCOMPATIBLE);
+}
+
+void RMWPublisherEvent::update_inconsistent_topic(
+    uint32_t total_count, uint32_t total_count_change) {
+  std::unique_lock<std::mutex> lock_mutex(on_new_event_m_);
+
+  inconsistent_topic_status_.total_count = total_count;
+  inconsistent_topic_status_.total_count_change += total_count_change;
+
+  inconsistent_topic_changed_ = true;
+
+  trigger_event(RMW_EVENT_PUBLISHER_INCOMPATIBLE_TYPE);
+}
+
+void RMWPublisherEvent::update_matched(
+    int32_t total_count,
+    int32_t total_count_change,
+    int32_t current_count,
+    int32_t current_count_change) {
+  std::lock_guard<std::mutex> lock(on_new_event_m_);
+
+  matched_status_.total_count = total_count;
+  matched_status_.total_count_change += total_count_change;
+  matched_status_.current_count = current_count;
+  matched_status_.current_count_change += current_count_change;
+  matched_changes_ = true;
+
+  trigger_event(RMW_EVENT_PUBLICATION_MATCHED);
+}
+
+void RMWPublisherEvent::trigger_event(rmw_event_type_t event_type) {
+  if (on_new_event_cb_[event_type]) {
+    on_new_event_cb_[event_type](user_data_[event_type], 1);
+  }
+
+  event_guard[event_type].set_trigger_value(true);
+}
+
+```
+
+## Trantor
+
+这份代码是 ROS2 项目中 rmw_fastrtps 相关的代码，主要包含了一些与发布者（Publisher）相关的功能。以下是对这份代码的详细解释和函数之间的调用关系：
+
+1. `CustomPublisherInfo` 类：该类主要用于存储发布者的信息。
+
+2. `CustomDataWriterListener` 类：该类继承自 `EventListenerInterface`，主要用于监听数据写入器（DataWriter）的事件。它包含以下方法：
+
+   - `on_publication_matched`：当数据写入器匹配到一个订阅者时触发。
+   - `on_offered_deadline_missed`：当数据写入器错过了截止时间时触发。
+   - `on_liveliness_lost`：当数据写入器失去活跃状态时触发。
+   - `on_offered_incompatible_qos`：当数据写入器提供的 QoS 不兼容时触发。
+
+3. `RMWPublisherEvent` 类：该类主要用于处理发布者的事件。它包含以下方法：
+   - `get_statuscondition`：获取发布者的状态条件。
+   - `take_event`：获取指定类型的事件。
+   - `set_on_new_event_callback`：设置新事件的回调函数。
+   - `track_unique_subscription`：追踪唯一的订阅者。
+   - `untrack_unique_subscription`：取消追踪唯一的订阅者。
+   - `subscription_count`：获取订阅者的数量。
+   - `update_deadline`：更新截止时间。
+   - `update_liveliness_lost`：更新失去活跃状态的信息。
+   - `update_offered_incompatible_qos`：更新提供的不兼容 QoS 信息。
+   - `update_inconsistent_topic`：更新不一致主题的信息。
+   - `update_matched`：更新匹配的信息。
+   - `trigger_event`：触发指定类型的事件。
+
+函数之间的调用关系如下：
+
+- `CustomDataWriterListener` 类中的方法会在相应的事件发生时被调用，例如 `on_publication_matched` 方法会在数据写入器匹配到一个订阅者时被调用。这些方法会调用 `RMWPublisherEvent` 类中的相应方法，如 `update_matched`、`update_deadline` 等，以更新事件的状态。
+
+- `RMWPublisherEvent` 类中的 `set_on_new_event_callback` 方法用于设置新事件的回调函数。当某个事件发生时，例如发布者匹配到一个订阅者，`CustomDataWriterListener` 类中的 `on_publication_matched` 方法会被调用，然后调用 `RMWPublisherEvent` 类中的 `update_matched` 方法更新匹配的信息，最后调用 `trigger_event` 方法触发该事件的回调函数。
+
+总的来说，这份代码主要用于处理 ROS2 中发布者相关的事件，包括匹配订阅者、更新截止时间、失去活跃状态等。通过监听数据写入器的事件，可以实时更新发布者的状态，并触发相应的回调函数。
+
+## You
+
+类似的，我希望能按照这个文件中的代码在 rmw_cyclonedds_cpp 也实现一份同样的功能，请给出完整的示例代码
+
+## Trantor
+
+为了在 `rmw_cyclonedds_cpp` 中实现类似的功能，我们需要创建一个自定义的发布者监听器（PublisherListener）和一个发布者事件处理器（PublisherEventHandler）。以下是完整的示例代码：
+
+```cpp
+#include "rmw_cyclonedds_cpp/custom_publisher_info.hpp"
+
+#include "event_helpers.hpp"
+#include "dds/dds.hpp"
+#include "types/event_types.hpp"
+
+PublisherListenerInterface *CustomPublisherInfo::get_listener() const { return publisher_event_; }
+
+CustomDataWriterListener::CustomDataWriterListener(RMWPublisherEvent *pub_event)
+    : publisher_event_(pub_event) {}
+
+void CustomDataWriterListener::on_publication_matched(
+    dds::pub::DataWriterBase *writer,
+    const dds::core::status::PublicationMatchedStatus &status) {
+  (void)writer;  // 忽略未使用的参数 (Ignore unused parameter)
+
+  if (status.current_count_change() == 1) {
+    publisher_event_->track_unique_subscription(status.last_subscription_handle());
+  } else if (status.current_count_change() == -1) {
+    publisher_event_->untrack_unique_subscription(status.last_subscription_handle());
+  } else {
+    return;
+  }
+
+  publisher_event_->update_matched(
+      status.total_count(), status.total_count_change(), status.current_count(),
+      status.current_count_change());
+}
+
+void CustomDataWriterListener::on_offered_deadline_missed(
+    dds::pub::DataWriterBase *writer,
+    const dds::core::status::OfferedDeadlineMissedStatus &status) {
+  (void)writer;  // 忽略未使用的参数 (Ignore unused parameter)
+
+  publisher_event_->update_deadline(status.total_count(), status.total_count_change());
+}
+
+void CustomDataWriterListener::on_liveliness_lost(
+    dds::pub::DataWriterBase *writer,
+    const dds::core::status::LivelinessLostStatus &status) {
+  (void)writer;  // 忽略未使用的参数 (Ignore unused parameter)
+
+  publisher_event_->update_liveliness_lost(status.total_count(), status.total_count_change());
+}
+
+void CustomDataWriterListener::on_offered_incompatible_qos(
+    dds::pub::DataWriterBase *writer,
+    const dds::core::status::OfferedIncompatibleQosStatus &status) {
+  (void)writer;  // 忽略未使用的参数 (Ignore unused parameter)
+
+  publisher_event_->update_offered_incompatible_qos(
+      status.last_policy_id(), status.total_count(), status.total_count_change());
+}
+
+RMWPublisherEvent::RMWPublisherEvent(CustomPublisherInfo *info)
+    : publisher_info_(info),
+      deadline_changed_(false),
+      liveliness_changed_(false),
+      incompatible_qos_changed_(false),
+      matched_changes_(false) {}
+
+dds::core::status::StatusMask RMWPublisherEvent::get_status_mask() const {
+  return publisher_info_->data_writer_->status_conditions().status_mask();
+}
+
+bool RMWPublisherEvent::take_event(rmw_event_type_t event_type, void *event_info) {
+  assert(rmw_cyclonedds_cpp::internal::is_event_supported(event_type));
+
+  std::unique_lock<std::mutex> lock_mutex(on_new_event_m_);
+
+// ... 其他方法与 rmw_fastrtps_shared_cpp 中的实现相同，只需替换为 CycloneDDS 相关的 API ...
+
+void RMWPublisherEvent::set_on_new_event_callback(
+    rmw_event_type_t event_type, const void *user_data, rmw_event_callback_t callback) {
+  std::unique_lock<std::mutex> lock_mutex(on_new_event_m_);
+
+  dds::core::status::StatusMask status_mask = publisher_info_->data_writer_->status_conditions().status_mask();
+
+// ... 其他代码与 rmw_fastrtps_shared_cpp 中的实现相同，只需替换为 CycloneDDS 相关的 API ...
+}
+```
+
+这份代码在 `rmw_cyclonedds_cpp` 中实现了与 `rmw_fastrtps_shared_cpp` 类似的功能。主要区别在于使用了 CycloneDDS 的 API 替换了 FastRTPS 的 API。例如，使用 `dds::pub::DataWriterBase` 替换了 `eprosima::fastdds::dds::DataWriter`，以及使用 `dds::core::status::PublicationMatchedStatus` 替换了 `eprosima::fastdds::dds::PublicationMatchedStatus` 等。
+
+需要注意的是，这份示例代码可能需要根据实际的 `rmw_cyclonedds_cpp` 项目进行一些调整，以确保与项目中其他部分的兼容性。
